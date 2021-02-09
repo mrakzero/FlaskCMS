@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block main %}
+    super()
+
+    <!--无限极左侧菜单-->
+    <div class="layui-side layui-bg-black layuimini-menu-left">
+    </div>
+
+    <!--初始化加载层-->
+    <div class="layuimini-loader">
+        <div class="layuimini-loader-inner"></div>
+    </div>
+
+    <!--手机端遮罩层-->
+    <div class="layuimini-make"></div>
+
+    <!-- 移动导航 -->
+    <div class="layuimini-site-mobile"><i class="layui-icon"></i></div>
+
+    <div class="layui-body">
+
+        <div class="layui-card layuimini-page-header layui-hide">
+            <div class="layui-breadcrumb layuimini-page-title">
+                <a lay-href="" href="/">主页</a><span lay-separator="">/</span>
+                <a><cite>常规管理</cite></a><span lay-separator="">/</span>
+                <a><cite>系统设置</cite></a>
+            </div>
+        </div>
+
+        <div class="layuimini-content-page">
+        </div>
+
+    </div>
+{% endblock %}
