@@ -25,6 +25,7 @@ class DevelopmentConfig(Config):  # 开发环境配置类
     MAIL_USE_SSL = True
     MAIL_USERNAME = 'user@flaskcms.com'
     MAIL_PASSWORD = 'xxxxxx'
+    SQLALCHEMY_ECHO = True  # 如果设置成 True，SQLAlchemy 将会记录所有发到标准输出(stderr)的语句
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 

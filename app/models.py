@@ -81,3 +81,23 @@ class Page(db.Model):
 
     def __repr__(self):
         return '<Page %r>' % self.title
+
+
+class Tag(db.Model):
+    __tablename__ = 't_tag'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False, index=True)
+
+    def __repr__(self):
+        return '<Tag %r>' % self.name
+
+
+class Site(db.Model):
+    __tablename__ = 't_site'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False, index=True)
+    keywords = db.Column(db.String(64), comment='keywords')
+    description = db.Column(db.String(64), comment='description')
+
+    def __repr__(self):
+        return '<Site %r>' % self.name
