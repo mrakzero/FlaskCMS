@@ -29,7 +29,7 @@ class DevelopmentConfig(Config):  # 开发环境配置类
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 
-class TestingConfig(Config):  # 测试环境配置类
+class TestConfig(Config):  # 测试环境配置类
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
 
@@ -40,7 +40,7 @@ class ProductionConfig(Config):  # 生产环境配置类
 
 config = {  # config字典注册了不同的配置，默认配置为开发环境，本例使用开发环境
     'development': DevelopmentConfig,
-    'testing': TestingConfig,
+    'testing': TestConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
