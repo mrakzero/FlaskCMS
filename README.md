@@ -10,6 +10,13 @@ FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便�
 
 ## 安装教程
 
+### 创建数据库
+
+```python
+　python manage.py db init
+　python manage.py db migrate
+　python manage.py db upgrade
+```
 
 ## 使用说明
 
