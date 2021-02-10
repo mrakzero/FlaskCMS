@@ -31,6 +31,7 @@ class Post(db.Model):
     title = db.Column(db.String(64), nullable=False, index=True, comment='文章标题')
     slug = db.Column(db.String(64), nullable=False, unique=True, comment='标题别名')
     authorid = db.Column(db.Integer, db.ForeignKey('t_user.id'), comment='作者ID')
+    author = db.relationship('User', backref=db.backref('t_post', lazy='dynamic'))
     excerpt = db.Column(db.Text, comment='摘要')
     content = db.Column(db.Text, comment='内容')
     categoryid = db.Column(db.Integer, db.ForeignKey('t_category.id'), comment='分类ID')
@@ -40,6 +41,16 @@ class Post(db.Model):
     counter = db.Column(db.Integer, comment='阅读计数')
     tag = db.relationship('Tag', secondary=tags, backref=db.backref('t_post', lazy='dynamic'))
     status = db.Column(db.Enum(PostStatus), default=PostStatus.draft, comment='文章状态')
+
+    def __init__(self, title, slug, author, excerpt, content, category, status, tag):
+        self.title = title
+        self.slug = slug
+        self.author = author
+        self.excerpt = excerpt
+        self.content = content
+        self.category = category
+        self.status = status
+        self.tag = tag
 
     def __repr__(self):
         return '<Post %r>' % self.title
