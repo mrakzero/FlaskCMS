@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
+
+from mako.parsetree import Tag
+
 from app import create_app, db
-# from app.models. import User, Role, Post, Page, Category, Tag, Site
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-from app.models.user import User
+from app.models.page import Page
+from app.models.post import Post, Category
+from app.models.site import Site
+from app.models.user import User, Role
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
