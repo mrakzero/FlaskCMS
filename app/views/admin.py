@@ -1,7 +1,8 @@
-from  flask import Blueprint,render_template
+from flask import Blueprint, render_template
 
-ad = Blueprint('ad',__name__,url_prefix='/admin')
+bp_admin = Blueprint('admin', __name__, url_prefix='/admin', template_folder='../templates')
 
-@ad.route('/')
+
+@bp_admin.route('/')
 def admin():
     return render_template('index.html')

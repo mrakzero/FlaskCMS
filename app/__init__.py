@@ -22,7 +22,7 @@ def create_app(config_name):
     db.init_app(app)  # 同上
 
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
-    app.register_blueprint(admin.ad)
+    app.register_blueprint(admin.bp_admin)
     return app
 
 
