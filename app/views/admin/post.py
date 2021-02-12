@@ -15,7 +15,7 @@ bp_admin_post = Blueprint('admin_post', __name__, url_prefix='/admin', template_
 
 @bp_admin_post.route('/post', methods=['GET'])
 def post_query():
-    pass
+    return render_template('admin/post/post.html')
 
 
 @bp_admin_post.route('/post/new', methods=['GET', 'POST'])
@@ -27,7 +27,7 @@ def post_new():
         db.session.commit()
         flash('Post created.', 'success')
         return redirect(url_for('admin.post'))
-    return render_template('admin/post_new.html', form=form)
+    return render_template('admin/post/post-new.html', form=form)
 
 
 @bp_admin_post.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
@@ -43,7 +43,7 @@ def post_update(post_id):
     form.title.data = post.title
     form.content.data = post.content
     form.categoryid.data = post.categoryid
-    return render_template('admin/post_edit.html', form=form)
+    return render_template('admin/post/post-edit.html', form=form)
 
 
 @bp_admin_post.route('/post/<int:post_id>/delete', methods=['POST'])
