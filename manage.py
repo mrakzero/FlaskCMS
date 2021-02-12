@@ -2,14 +2,12 @@
 
 import os
 
-from mako.parsetree import Tag
-
 from app import create_app, db
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
 from app.models.page import Page
-from app.models.post import Post, Category
+from app.models.post import Post, Category, Tag
 from app.models.site import Site
 from app.models.user import User, Role
 

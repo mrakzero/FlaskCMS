@@ -2,7 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>FlaskCMS后台管理系统</title>
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>FlaskCMS后台管理系统</title>
+    {% endif %}
+
     <meta name="keywords" content="FlaskCMS后台管理系统">
     <meta name="description"
           content="FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便的的搭建自己的内容管理系统或者博客系统">
@@ -13,16 +18,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <link rel="icon" href="../static/images/favicon.ico">
+    <link rel="icon" href="../../static/images/favicon.ico">
     {% block style %}
-        <link rel="stylesheet" href="../static/lib/layui/css/layui.css" media="all">
+        <link rel="stylesheet" href="../../static/lib/layui/css/layui.css" media="all">
         <!--[if lt IE 9]>
         <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
         <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
     {% endblock %}
-    <style id="layuimini-bg-color">
-    </style>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -112,13 +115,13 @@
 
     <div class="layui-footer">
         {% block footer %}
-
+            © ilearnging
         {% endblock %}
     </div>
 </div>
 
 {% block script %}
-    <script src="../static/lib/layui/layui.all.js" charset="utf-8"></script>
+    <script src="../../static/lib/layui/layui.all.js" charset="utf-8"></script>
     <script>
         //JavaScript代码区域
         layui.use('element', function () {
