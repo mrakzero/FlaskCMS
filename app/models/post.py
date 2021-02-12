@@ -25,6 +25,8 @@ class Category(db.Model):
         return '<Category %r>' % self.name
 
 
+
+
 class Post(db.Model):
     __tablename__ = 't_post'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -42,13 +44,13 @@ class Post(db.Model):
     tag = db.relationship('Tag', secondary=tags, backref=db.backref('t_post', lazy='dynamic'))
     status = db.Column(db.Enum(PostStatus), default=PostStatus.draft, comment='文章状态')
 
-    def __init__(self, title, slug, author, excerpt, content, category, status, tag):
+    def __init__(self, title, slug, authorid, excerpt, content, categoryid, status, tag):
         self.title = title
         self.slug = slug
-        self.author = author
+        self.authorid = authorid
         self.excerpt = excerpt
         self.content = content
-        self.category = category
+        self.categoryid = categoryid
         self.status = status
         self.tag = tag
 
