@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# File: post_views.py
+# File: post.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 from flask import Blueprint, request, flash, redirect, url_for, render_template
 
 from app import db
-from app.forms.post_forms import PostForm
+from app.forms.post import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
 
