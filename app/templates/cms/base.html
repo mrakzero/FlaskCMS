@@ -36,18 +36,13 @@
     {% endblock %}
 </head>
 <body>
-
-<div class="layui-body">
-    {% block header %}{% endblock %}
-</div>
-
-<div class="layui-body">
+<div class="layui-layout-body">
+    {% include 'cms/header.html' %}
     {% block main %}{% endblock %}
+    {% include 'cms/footer.html' %}
 </div>
 
-<div class="layui-body">
-    {% block footer %}{% endblock %}
-</div>
+
 
 {% block script %}
     <script src="../../static/lib/layui/layui.all.js" charset="utf-8"></script>
