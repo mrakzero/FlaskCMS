@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: post_manage.py
+# File: post_management.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 22:06
 from flask_wtf import FlaskForm
@@ -16,8 +16,8 @@ class PostForm(FlaskForm):
     authorid = SelectField('作者', validators=[DataRequired()])
     excerpt = TextAreaField('摘要', validators=[DataRequired()])
     content = TextAreaField('内容', validators=[DataRequired(message='内容不能为空')])
-    categoryid = SelectField('分类', coerce=int, default=1)
-    status = IntegerField('状态', coerce=int, default=1)
+    categoryid = SelectField('分类',  default=1)
+    status = IntegerField('状态', default=1)
     tag = StringField('标签', validators=[DataRequired()])
     submit = SubmitField()
 

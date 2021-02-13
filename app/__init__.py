@@ -20,11 +20,20 @@ def create_app(config_name):
     db.init_app(app)  # 同上
 
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
-    from app.views.admin import dashboard, post_manage
-    from app.views.cms import index
+    from app.views.admin import dashboard, post_management, page_management, comment_management, media_management, \
+        user_management, setting
+    from app.views.cms import index, category, page, post
 
     app.register_blueprint(index.bp_cms_index)
+    app.register_blueprint(category.bp_cms_category)
+    app.register_blueprint(post.bp_cms_post)
+    app.register_blueprint(page.bp_cms_page)
+
     app.register_blueprint(dashboard.bp_admin_index)
-    app.register_blueprint(post_manage.bp_admin_post)
+    app.register_blueprint(post_management.bp_admin_post)
+    app.register_blueprint(page_management.bp_admin_page)
+    app.register_blueprint(media_management.bp_admin_media)
+    app.register_blueprint(user_management.bp_admin_user)
+    app.register_blueprint(setting.bp_admin_setting)
 
     return app
