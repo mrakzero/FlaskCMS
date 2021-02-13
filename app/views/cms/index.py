@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: index.py
+# File: dashboard.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 18:33
 from flask import Blueprint, render_template

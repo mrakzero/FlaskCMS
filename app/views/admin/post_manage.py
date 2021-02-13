@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: post.py
+# File: post_manage.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 from flask import Blueprint, request, flash, redirect, url_for, render_template
@@ -13,12 +13,12 @@ bp_admin_post = Blueprint('admin_post', __name__, url_prefix='/admin', template_
                           static_folder='../static')
 
 
-@bp_admin_post.route('/post', methods=['GET'])
+@bp_admin_post.route('/post/', methods=['GET'])
 def post_query():
     return render_template('admin/post/post.html')
 
 
-@bp_admin_post.route('/post/new', methods=['GET', 'POST'])
+@bp_admin_post.route('/post/new/', methods=['GET', 'POST'])
 def post_new():
     form = PostForm()
     if form.validate_on_submit():
@@ -30,7 +30,7 @@ def post_new():
     return render_template('admin/post/post-new.html', form=form)
 
 
-@bp_admin_post.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@bp_admin_post.route('/post/<int:post_id>/update/', methods=['GET', 'POST'])
 def post_update(post_id):
     form = PostForm()
     post = Post.query.get_or_404(post_id)
