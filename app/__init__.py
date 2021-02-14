@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
+from flask_ckeditor import CKEditor
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
@@ -9,6 +10,7 @@ from config import config
 
 mail = Mail()
 db = SQLAlchemy()
+ckeditor = CKEditor
 
 
 def create_app(config_name):
@@ -18,6 +20,7 @@ def create_app(config_name):
     config[config_name].init_app(app)  # 通过config.py统一接口
     mail.init_app(app)  # 同上
     db.init_app(app)  # 同上
+    ckeditor.init_app(app)
 
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
     from app.views.admin import dashboard, post_management, page_management, comment_management, media_management, \
