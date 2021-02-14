@@ -15,7 +15,6 @@ bp_admin_user = Blueprint('admin_user', __name__, url_prefix='/admin', template_
 @bp_admin_user.route('/register', methods=['GET', 'POST'])
 def register():
     register_form = RegisterForm()
-    print('enter regiser view!')
     if register_form.validate_on_submit():
         user = get_user_info(register_form)
         if db.session.query(User).filter(User.username == user.username).all():
@@ -31,7 +30,9 @@ def register():
 @bp_admin_user.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
-    return render_template('admin/login.html')
+    if login_form.validate_on_submit():
+        return redirect(url_for('admin_index'))
+    return render_template('admin/login.html', login_form=login_form)
 
 
 @bp_admin_user.route('/logout', methods=['GET', 'POST'])
