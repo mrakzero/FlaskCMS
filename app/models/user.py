@@ -12,7 +12,7 @@ class UserStatus(enum.Enum):
 class User(db.Model):
     __tablename__ = 't_user'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True, comment='用户id')
-    login = db.Column(db.String(64), unique=True, index=True, comment='登录名')
+    username = db.Column(db.String(64), unique=True, index=True, comment='登录名')
     nickname = db.Column(db.String(64), nullable=False, unique=True, comment='用户昵称')
     password = db.Column(db.String(256), nullable=False, comment='密码')
     email = db.Column(db.String(128), nullable=False, unique=True, comment='邮件')
@@ -21,15 +21,14 @@ class User(db.Model):
     registertime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
     status = db.Column(db.Enum(UserStatus), default=UserStatus.normal, comment='用户状态')
 
-    def __init__(self, login, nickname, password, email, roleid):
-        self.login = login
+    def __init__(self, username, nickname, password, email):
+        self.username = username
         self.nickname = nickname
         self.password = password
         self.email = email
-        self.roleid = roleid
 
     def __repr__(self):
-        return '<User %r>' % self.login
+        return '<User %r>' % self.username
 
 
 class Role(db.Model):

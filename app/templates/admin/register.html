@@ -1,0 +1,58 @@
+{% extends 'admin/base.html' %}
+{% block style %}
+    {{ super() }}
+{% endblock %}
+{% block main %}
+    {{ super() }}
+
+    <div class="layui-fluid">
+        <div class="layui-row layui-col-space10">
+
+            <div class="layui-col-lg3"></div>
+
+            <div class="layui-col-lg3">
+                <form class="layui-form layui-form-pane" action="" method="post">
+                    {{ register_form.csrf_token }}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{{ register_form.username.lable }}</label>
+                        <div class="layui-input-block">
+                            {{ register_form.username() }}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{{ register_form.nickname.lable }}</label>
+                        <div class="layui-input-block">
+                            {{ register_form.nickname() }}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{{ register_form.password.lable }}</label>
+                        <div class="layui-input-block">
+                            {{ register_form.password() }}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认{{ register_form.password.lable }}</label>
+                        <div class="layui-input-block">
+                            {{ register_form.password() }}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{{ register_form.email.lable }}</label>
+                        <div class="layui-input-block">
+                            {{ register_form.email() }} <label>{{ register_form.email.errors[0] }}</label>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="">注册</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-col-lg3"></div>
+
+        </div>
+    </div>
+{% endblock %}

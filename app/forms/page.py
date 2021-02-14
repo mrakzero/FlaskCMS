@@ -21,4 +21,4 @@ class PostForm(FlaskForm):
         super(PostForm, self).__init__(*args, **kwargs)
 
         self.authorid.choices = [(author.id, author.name)
-                                 for author in User.query.order_by(User.login).all()]
+                                 for author in User.query.order_by(User.username).all()]
