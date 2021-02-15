@@ -47,13 +47,13 @@ class RegisterForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
 
-    def validate_email(self, field):
-        if User.objects.filter(email=field.data).count() > 0:
-            raise ValidationError('Email already registered')
-
-    def validate_username(self, field):
-        if User.objects.filter(username=field.data).count() > 0:
-            raise ValidationError('Username has exist')
+    # def validate_email(self, field):
+    #     if User.objects.filter_by(email=field.data).count() > 0:
+    #         raise ValidationError('Email already registered')
+    #
+    # def validate_username(self, field):
+    #     if User.objects.filter(username=field.data).count() > 0:
+    #         raise ValidationError('Username has exist')
 
 
 class LoginForm(FlaskForm):

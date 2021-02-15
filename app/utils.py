@@ -2,6 +2,8 @@
 # File: utils.py
 # Author: Zhangzhijun
 # Date: 2021/2/15 11:41
+from werkzeug.security import generate_password_hash
+
 from app import db
 from app.models.post import Category, Post
 from app.models.user import Role, User
@@ -48,3 +50,11 @@ def add_default_data():
         db.session.add(default_post)
 
     db.session.commit()
+
+
+@staticmethod
+def generate_user_password_hash(password):
+    if password == '':
+        return 0
+    else:
+        return generate_password_hash(password)

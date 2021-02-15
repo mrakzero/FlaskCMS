@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-bp_admin_index = Blueprint('admin_index', __name__, url_prefix='/admin', template_folder='../templates/admin/',
+bp_admin_index = Blueprint('admin_index', __name__, template_folder='../templates/admin/',
                            static_folder='../static')
 
 

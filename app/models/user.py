@@ -24,11 +24,11 @@ class User(db.Model, UserMixin):
     registertime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
     status = db.Column(db.Enum(UserStatus), default=UserStatus.normal, comment='用户状态')
 
-    def __init__(self, username, nickname, password, email):
-        self.username = username
-        self.nickname = nickname
-        self.password = password
-        self.email = email
+    # def __init__(self, username, nickname, password, email):
+    #     self.username = username
+    #     self.nickname = nickname
+    #     self.password = password
+    #     self.email = email
 
     def set_password(self, password):  # 用来设置密码的方法，接受密码作为参数
         self.password_hash = generate_password_hash(password)  # 将生成的密码保持到对应字段

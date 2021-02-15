@@ -47,7 +47,7 @@ def create_app(config_name):
     app.register_blueprint(post.bp_cms_post)
     app.register_blueprint(page.bp_cms_page)
 
-    app.register_blueprint(dashboard.bp_admin_index)
+    app.register_blueprint(dashboard.bp_admin_index, url_prefix='/admin')
     app.register_blueprint(post_management.bp_admin_post)
     app.register_blueprint(page_management.bp_admin_page)
     app.register_blueprint(media_management.bp_admin_media)
@@ -55,3 +55,4 @@ def create_app(config_name):
     app.register_blueprint(setting.bp_admin_setting)
 
     return app
+

@@ -4,6 +4,7 @@
 # Date: 2021/2/13 17:26
 from flask import Blueprint, flash, redirect, url_for, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user
+from werkzeug.security import generate_password_hash
 
 from app import db, login_manager
 from app.forms.user import UserForm, LoginForm, RegisterForm
@@ -18,13 +19,17 @@ def register():
     register_form = RegisterForm()
     if register_form.validate_on_submit():
         user = get_user_info(register_form)
-        if db.session.query(User).filter(User.username == user.username).all():
+        if db.session.query(User).filter(User.username == user.username).count() > 0:
+            flash('Username has exist.', 'failed')
+            return render_template('admin/register.html', register_form=register_form)
+        elif db.session.query(User).filter(User.email == user.email).count() > 0:
+            flash('Email has exist.', 'failed')
             return render_template('admin/register.html', register_form=register_form)
         else:
             db.session.add(user)
             db.session.commit()
-            flash('Post created.', 'success')
-            return redirect(url_for('cms.index'))
+            flash('注册成功！', 'success')
+            return redirect(url_for('index'))
     return render_template('admin/register.html', register_form=register_form)
 
 
@@ -57,11 +62,11 @@ def get_user_info(form):
     nickname = form.nickname.data
     password = form.password.data
     email = form.email.data
-
+    print(generate_password_hash(password))
     user = User(
         username=username,
         nickname=nickname,
-        password=password,
+        password_hash=generate_password_hash(password),
         email=email,
     )
 
