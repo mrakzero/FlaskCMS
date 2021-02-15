@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import enum
 
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import db
 
 
@@ -9,12 +12,12 @@ class UserStatus(enum.Enum):
     frozen = 1
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 't_user'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True, comment='用户id')
     username = db.Column(db.String(64), unique=True, index=True, comment='登录名')
     nickname = db.Column(db.String(64), nullable=False, unique=True, comment='用户昵称')
-    password = db.Column(db.String(256), nullable=False, comment='密码')
+    password_hash = db.Column(db.String(256), nullable=False, comment='密码')
     email = db.Column(db.String(128), nullable=False, unique=True, comment='邮件')
     roleid = db.Column(db.Integer, db.ForeignKey('t_role.id'), comment='角色ID')
     role = db.relationship('Role', backref=db.backref('t_user', lazy='dynamic'))
@@ -26,6 +29,12 @@ class User(db.Model):
         self.nickname = nickname
         self.password = password
         self.email = email
+
+    def set_password(self, password):  # 用来设置密码的方法，接受密码作为参数
+        self.password_hash = generate_password_hash(password)  # 将生成的密码保持到对应字段
+
+    def validate_password(self, password):  # 用于验证密码的方法，接受密码作为参数
+        return check_password_hash(self.password_hash, password)  # 返回布尔值
 
     def __repr__(self):
         return '<User %r>' % self.username
