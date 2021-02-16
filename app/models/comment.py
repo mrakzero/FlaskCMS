@@ -9,10 +9,10 @@ class Comment(db.Model):
     nickname = db.Column(db.String(64), nullable=False, comment='用户昵称')
     content = db.Column(db.Text, comment='评论内容')
     date = db.Column(db.DateTime, server_default=db.func.now(), comment='发表时间')
-    postid = db.Column(db.Integer, db.ForeignKey('Post.id'),comment='文章id')
-    parentid = db.Column(db.Integer, db.ForeignKey("comment.id"),comment='父评论id')
+    postid = db.Column(db.Integer, db.ForeignKey('Post.id'), comment='文章id')
+    parentid = db.Column(db.Integer, db.ForeignKey("comment.id"), comment='父评论id')
 
-    def __init__(self, name):
+    def __init__(self, name, content):
         self.name = name
 
     def __repr__(self):

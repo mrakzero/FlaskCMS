@@ -4,6 +4,7 @@
 # Date: 2021/2/16 16:00
 # -*- coding: utf-8 -*-
 from app import db
+from app.models.comment import Comment
 from app.models.post import Post
 from app.models.user import Role, Permission, User
 
@@ -26,6 +27,10 @@ admin = User(username='admin', nickname='管理员', password='admin.123', email
 # add default Post
 print("add default Post!")
 default_post = Post(title="开启FlaskCMS之旅", slug="Beging wiht FlaskCMS", content="这是Flask CMS的第一篇文章！")
+
+# add default Post
+print("add default Comment!")
+default_comment = Comment('admin', "这是FlaskCMS的第一条评论！")
 
 db.session.add(all_rights)
 db.session.add(administrator)
