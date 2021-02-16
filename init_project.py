@@ -3,6 +3,8 @@
 # Author: Zhangzhijun
 # Date: 2021/2/16 16:00
 # -*- coding: utf-8 -*-
+from werkzeug.security import generate_password_hash
+
 from app import db
 from app.models.comment import Comment
 from app.models.post import Post
@@ -22,15 +24,15 @@ subscriber = Role("subscriber", "订阅者", "只允许修改自己的个人资�
 
 # add default User
 print("add default user!")
-admin = User(username='admin', nickname='管理员', password='admin.123', email='admin@flaskcms.com')
+admin = User(username='admin', nickname='管理员', password_hash=generate_password_hash('admin.123'), email='admin@flaskcms.com')
 
 # add default Post
 print("add default Post!")
-default_post = Post(title="开启FlaskCMS之旅", slug="Beging wiht FlaskCMS", content="这是Flask CMS的第一篇文章！")
+# default_post = Post(title='开启FlaskCMS之旅', slug='Beging wiht FlaskCMS', content='这是Flask CMS的第一篇文章！')
 
 # add default Post
 print("add default Comment!")
-default_comment = Comment('admin', "这是FlaskCMS的第一条评论！")
+# default_comment = Comment('admin', "这是FlaskCMS的第一条评论！")
 
 db.session.add(all_rights)
 db.session.add(administrator)
@@ -39,5 +41,5 @@ db.session.add(author)
 db.session.add(contributor)
 db.session.add(subscriber)
 db.session.add(admin)
-db.session.add(default_post)
+# db.session.add(default_post)
 db.session.commit()
