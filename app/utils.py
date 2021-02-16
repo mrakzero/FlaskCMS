@@ -12,13 +12,13 @@ from app.models.user import Role, User
 def add_default_data():
     # 实例化ROM对象
     # 添加默认角色
-    administrator = Role("管理员", "管理员拥有全部权限")
-    editor = Role("编辑", "可以对文章、标签、分类、页面、友情链接、评论进行管理")
-    author = Role("作者", "所发表的文章无需管理员审核即可显示，还可以编辑已通过审核的文章，并且拥有媒体库的使用权限")
-    contributor = Role("投稿者", "可以发表或删除自己的文章，但所发文章需经管理员审核后才能在博客上显示")
-    subscriber = Role("订阅者", "只允许修改自己的个人资料，例如昵称、联系方式、密码等等")
-    if Role.query.filter_by(name='管理员') or Role.query.filter_by(name='编辑') or Role.query.filter_by(
-            name='作者') or Role.query.filter_by(name='投稿者') or Role.query.filter_by(name='订阅者'):
+    administrator = Role("administrator","管理员", "管理员拥有全部权限")
+    editor = Role("editor","编辑", "可以对文章、标签、分类、页面、友情链接、评论进行管理")
+    author = Role("author","作者", "所发表的文章无需管理员审核即可显示，还可以编辑已通过审核的文章，并且拥有媒体库的使用权限")
+    contributor = Role("contributor","投稿者", "可以发表或删除自己的文章，但所发文章需经管理员审核后才能在博客上显示")
+    subscriber = Role("subscriber","订阅者", "只允许修改自己的个人资料，例如昵称、联系方式、密码等等")
+    if Role.query.filter_by(code='administrator') or Role.query.filter_by(code='editor') or Role.query.filter_by(
+            code='author') or Role.query.filter_by(code='contributor') or Role.query.filter_by(code='subscriber'):
         pass
     else:
         db.session.add(administrator)
@@ -28,7 +28,7 @@ def add_default_data():
         db.session.add(subscriber)
 
     # 添加默认管理员
-    admin = User('admin', 'administrator', 'admin.123', 'admin@flaskcms.com')
+    admin = User('admin', '管理员', 'admin.123', 'admin@flaskcms.com')
     if User.query.filter_by(username='admin'):
         pass
     else:

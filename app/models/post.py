@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 import enum
 
+from flask_login import current_user
+
 from app import db
+from app.models.user import User
 
 t_post_tag = db.Table('t_post_tag',
                       db.Column('tagid', db.Integer, db.ForeignKey('t_tag.id')),
                       db.Column('postid', db.Integer, db.ForeignKey('t_post.id'))
                       )
-
-
-class PostStatus(enum.Enum):
-    published = 0
-    draft = 1
 
 
 class Category(db.Model):
@@ -20,7 +18,7 @@ class Category(db.Model):
     name = db.Column(db.String(64), nullable=False, index=True, comment='分类名称')
     slug = db.Column(db.String(64), nullable=False, unique=True, comment='分类别名')
     description = db.Column(db.String(256), comment='分类描述')
-    post = db.relationship('Post', backref=db.backref('t_category', lazy='dynamic'))
+    post = db.relationship('Post', backref=db.backref('t_category'), lazy='dynamic')
 
     def __repr__(self):
         return '<Category %r>' % self.name
@@ -38,19 +36,33 @@ class Post(db.Model):
     publishtime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
     updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), comment='修改时间')
     counter = db.Column(db.Integer, comment='阅读计数')
-    tag = db.relationship('Tag', secondary=t_post_tag, backref=db.backref('t_post', lazy='dynamic'))
-    status = db.Column(db.Enum(PostStatus), default=PostStatus.draft, comment='文章状态')
-    comment = db.relationship('Comment', backref='Post', lazy='dynamic')
+    tag = db.relationship('Tag', secondary=t_post_tag, backref=db.backref('t_post'), lazy='dynamic')
+    status = db.Column(db.Boolean, default=True, comment='文章状态')
+    comment = db.relationship('Comment', backref=db.backref('Post'), lazy='dynamic')
 
-    def __init__(self, title, slug, authorid, excerpt, content, categoryid, status, tag):
-        self.title = title
-        self.slug = slug
-        self.authorid = authorid
-        self.excerpt = excerpt
-        self.content = content
-        self.categoryid = categoryid
-        self.status = status
-        self.tag = tag
+    def __init__(self, **kwargs):
+        super().__init__(self, **kwargs)
+
+    def set_category(self):
+        """使劲儿中文章默认分类为未分类"""
+        if self.categoryid is None:
+            category = Category.query.filter_by(name='未分类').first()
+            self.categoryid = category.id
+            db.session.commit()
+
+    def set_author(self):
+        """设置文章作者"""
+        if current_user.id() is None:
+            author = User.query.filter_by(username='admin').first()
+            self.authorid = author.id
+            db.session.commit()
+
+    def set_excerpt(self):
+        """设置文章摘要默认为文章前500个字符"""
+        if self.excerpt is None:
+            excerpt = self.content[:500].strip()
+            self.excerpt = excerpt
+            db.session.commit()
 
     def __repr__(self):
         return '<Post %r>' % self.title

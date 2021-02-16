@@ -24,6 +24,9 @@ def create_app(config_name):
     config[config_name].init_app(app)  # 通过config.py统一接口
     mail.init_app(app)  # 同上
     db.init_app(app)  # 同上
+
+    # 设置登录安全级别
+    login_manager.session_protection = 'strong'
     login_manager.init_app(app)
     # 配置CKEditor
     app.config['CKEDITOR_SERVE_LOCAL'] = True  # 使用CKEditor本地资源
@@ -55,4 +58,3 @@ def create_app(config_name):
     app.register_blueprint(setting.bp_admin_setting)
 
     return app
-
