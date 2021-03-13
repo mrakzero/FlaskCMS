@@ -13,7 +13,7 @@ class UserStatus(enum.Enum):
 
 
 t_role_permission = db.Table('t_role_permission',
-                             db.Column('id', db.Integer,autoincrement=True, primary_key=True),
+                             db.Column('id', db.Integer, autoincrement=True, primary_key=True),
                              db.Column('roleid', db.Integer, db.ForeignKey('t_role.id')),
                              db.Column('permissionid', db.Integer, db.ForeignKey('t_permission.id')))
 
@@ -25,9 +25,12 @@ class Permission(db.Model):
     description = db.Column(db.String(64), nullable=True)
     role = db.relationship('Role', secondary='t_role_permission', backref=db.backref('t_role'), lazy='dynamic')
 
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
+    def __init__(self, **kwargs):
+        super(Permission, self).__init__(**kwargs)
+
+    def set_default_permission(self):
+        # todo
+        pass
 
     def __repr__(self):
         return '<Permission %r>' % self.name
@@ -41,10 +44,8 @@ class Role(db.Model):
     description = db.Column(db.String(256), comment='角色描述')
     user = db.relationship('User', backref=db.backref('t_role'), lazy='dynamic')
 
-    def __init__(self, code, name, description):
-        self.code = code
-        self.name = name
-        self.description = description
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
 
     def __repr__(self):
         return '<Role %r>' % self.name
@@ -64,6 +65,7 @@ class User(db.Model, UserMixin):
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
+
 
     def set_password(self, password):
         """用来设置密码的方法，接受密码作为参数,将生成的密码保持到对应字段"""
