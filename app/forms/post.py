@@ -16,8 +16,8 @@ class PostForm(FlaskForm):
     slug = StringField('别名', validators=[Length(min=1, max=64, message='别名长度为6~12位'), DataRequired(message='别名不能为空')])
     excerpt = TextAreaField('摘要', validators=[DataRequired()])
     content = CKEditorField('内容', validators=[DataRequired(message='内容不能为空')])
-    categoryid = SelectField('分类', default=1)
-    status = IntegerField('状态', default=1)
+    categoryid = SelectField('分类', validators=[DataRequired()])
+    status = IntegerField('状态', validators=[DataRequired()])
     tag = StringField('标签', validators=[DataRequired()])
     submit = SubmitField()
 
@@ -26,4 +26,4 @@ class PostForm(FlaskForm):
         self.categoryid.choices = [(category.id, category.name)
                                    for category in Category.query.order_by(Category.name).all()]
 
-
+        self.status.choices = [(True, u'发布'), (False, u'草稿')]

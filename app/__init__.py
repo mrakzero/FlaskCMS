@@ -41,7 +41,7 @@ def create_app(config_name):
     app.config['POST_PER_PAGE'] = 10
 
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
-    from app.views.admin import dashboard, post_management, page_management, comment_management, media_management, \
+    from app.views.admin import dashboard, post_management, page_management, comment, media_management, \
         user_management, setting
     from app.views.cms import index, category, page, post
 
