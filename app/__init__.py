@@ -41,8 +41,8 @@ def create_app(config_name):
     app.config['POST_PER_PAGE'] = 10
 
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
-    from app.views.admin import dashboard, post_management, page_management, comment, media_management, \
-        user_management, setting
+    from app.views.admin import dashboard, post, page, comment, media_management, \
+        user, setting
     from app.views.cms import index, category, page, post
 
     app.register_blueprint(index.bp_cms_index)
@@ -51,10 +51,10 @@ def create_app(config_name):
     app.register_blueprint(page.bp_cms_page)
 
     app.register_blueprint(dashboard.bp_admin_index, url_prefix='/admin')
-    app.register_blueprint(post_management.bp_admin_post)
-    app.register_blueprint(page_management.bp_admin_page)
+    app.register_blueprint(post.bp_admin_post)
+    app.register_blueprint(page.bp_admin_page)
     app.register_blueprint(media_management.bp_admin_media)
-    app.register_blueprint(user_management.bp_admin_user)
+    app.register_blueprint(user.bp_admin_user)
     app.register_blueprint(setting.bp_admin_setting)
 
     return app

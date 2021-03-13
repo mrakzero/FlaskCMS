@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: user_management.py
+# File: user.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:26
 from flask import Blueprint, flash, redirect, url_for, render_template

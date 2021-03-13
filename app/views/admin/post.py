@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: post_management.py
+# File: post.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 import os

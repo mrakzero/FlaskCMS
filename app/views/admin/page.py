@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: page_management.py
+# File: page.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:22
 from flask import Blueprint
