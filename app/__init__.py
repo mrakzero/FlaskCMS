@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
 from flask_login import LoginManager
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_wtf import CSRFProtect
@@ -13,6 +14,7 @@ mail = Mail()
 db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()  # CKEditor CSRF
+api = Api() # restful api
 
 
 def create_app(config_name):
@@ -22,6 +24,7 @@ def create_app(config_name):
     config[config_name].init_app(app)  # 通过config.py统一接口
     mail.init_app(app)  # 同上
     db.init_app(app)  # 同上
+    api.init_app(app)
 
     # 设置登录安全级别
     login_manager.session_protection = 'strong'

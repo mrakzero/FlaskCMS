@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# version:
-# author:Zhang Zhijun
-# time: 2021-03-13
-# file: category.py
-# function:
-# modify:
+# Version: 1.0.0
+# File: category.py
+# Author:Zhang Zhijun
+# Time: 2021-03-13
+
+
 from flask import Blueprint, render_template, jsonify
 
 from app.forms.category import CategoryForm
@@ -72,3 +72,8 @@ def delete_category(category_id):
         return jsonify(code=12, message='query filed.')
     if categories == None:
         return jsonify(code=12, message='result is none.')
+
+
+def objects_to_json():
+    # todo
+    pass
