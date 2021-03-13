@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
-from flask_ckeditor import CKEditor
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
@@ -13,7 +12,6 @@ from config import config
 mail = Mail()
 db = SQLAlchemy()
 login_manager = LoginManager()
-ckeditor = CKEditor()
 csrf = CSRFProtect()  # CKEditor CSRF
 
 
@@ -36,25 +34,33 @@ def create_app(config_name):
     app.config['CKEDITOR_FILE_UPLOADER'] = '/media'  #
     app.config['CKEDITOR_ENABLE_CSRF'] = False  # 禁用CSRF保护
     csrf.init_app(app)
-    ckeditor.init_app(app)
     # 配置分页
     app.config['POST_PER_PAGE'] = 10
 
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
-    from app.views.admin import dashboard, post, page, comment, media_management, \
-        user, setting
-    from app.views.cms import index, category, page, post
+    import app.views.admin.index as admin_index
+    import app.views.admin.post as admin_post
+    import app.views.admin.category as admin_category
+    import app.views.admin.page as admin_page
+    import app.views.admin.media as admin_media
+    import app.views.admin.setting as admin_setting
+    import app.views.admin.user as admin_user
 
-    app.register_blueprint(index.bp_cms_index)
-    app.register_blueprint(category.bp_cms_category)
-    app.register_blueprint(post.bp_cms_post)
-    app.register_blueprint(page.bp_cms_page)
+    import app.views.cms.index as cms_index
+    import app.views.cms.post as cms_post
+    import app.views.cms.category as cms_category
+    import app.views.cms.page as cms_page
 
-    app.register_blueprint(dashboard.bp_admin_index, url_prefix='/admin')
-    app.register_blueprint(post.bp_admin_post)
-    app.register_blueprint(page.bp_admin_page)
-    app.register_blueprint(media_management.bp_admin_media)
-    app.register_blueprint(user.bp_admin_user)
-    app.register_blueprint(setting.bp_admin_setting)
+    app.register_blueprint(cms_index.bp_cms_index)
+    app.register_blueprint(cms_category.bp_cms_category)
+    app.register_blueprint(cms_post.bp_cms_post)
+    app.register_blueprint(cms_page.bp_cms_page)
+
+    app.register_blueprint(admin_index.bp_admin_index)
+    app.register_blueprint(admin_post.bp_admin_post)
+    app.register_blueprint(admin_page.bp_admin_page)
+    app.register_blueprint(admin_media.bp_admin_media)
+    app.register_blueprint(admin_user.bp_admin_user)
+    app.register_blueprint(admin_setting.bp_admin_setting)
 
     return app
