@@ -24,7 +24,7 @@ def post_query():
 
 
 @bp_admin_post.route('/post/new', methods=['GET', 'POST'])
-def post_new():
+def create_post():
     post_form = PostForm()
     if post_form.validate_on_submit():
         post = get_post_info(post_form)
@@ -36,7 +36,7 @@ def post_new():
 
 
 @bp_admin_post.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
-def post_update(post_id):
+def update_post(post_id):
     post_form = PostForm()
     post = Post.query.get_or_404(post_id)
     if post_form.validate_on_submit():
@@ -55,7 +55,7 @@ def post_update(post_id):
 
 
 @bp_admin_post.route('/post/<int:post_id>/delete', methods=['POST'])
-def post_delete(post_id):
+def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
     db.session.commit()

@@ -9,7 +9,7 @@ from wtforms.validators import DataRequired, Length
 from app.models.user import User
 
 
-class PostForm(FlaskForm):
+class PageForm(FlaskForm):
     title = StringField('标题', validators=[Length(min=1, max=64, message='标题长度为1~64位'), DataRequired(message='标题不能为空')])
     slug = StringField('别名', validators=[Length(min=1, max=64, message='别名长度为6~12位'), DataRequired(message='别名不能为空')])
     authorid = SelectField('作者', validators=[DataRequired()])
@@ -18,7 +18,7 @@ class PostForm(FlaskForm):
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
-        super(PostForm, self).__init__(*args, **kwargs)
+        super(PageForm, self).__init__(*args, **kwargs)
 
         self.authorid.choices = [(author.id, author.name)
                                  for author in User.query.order_by(User.username).all()]
