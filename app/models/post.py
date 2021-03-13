@@ -8,8 +8,8 @@ from app.models.user import User
 
 t_post_tag = db.Table('t_post_tag',
                       db.Column('id', db.Integer, autoincrement=True, primary_key=True),
-                      db.Column('tagid', db.Integer, db.ForeignKey('t_tag.id')),
-                      db.Column('postid', db.Integer, db.ForeignKey('t_post.id'))
+                      db.Column('tagid', db.Integer, db.ForeignKey('t_tag.id'), primary_key=True),
+                      db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), primary_key=True)
                       )
 
 
