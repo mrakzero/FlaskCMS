@@ -12,8 +12,8 @@ class Comment(db.Model):
     postid = db.Column(db.Integer, db.ForeignKey('t_post.id'), comment='文章id')
     parentid = db.Column(db.Integer, db.ForeignKey("t_comment.id"), comment='父评论id')
 
-    def __init__(self, name, content):
-        self.name = name
+    def __init__(self, **kwargs):
+        super(Comment,self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<Model Comment `{}`>'.format(self.name)
+        return '<Model Comment `{}`>'.format(self.nickname)
