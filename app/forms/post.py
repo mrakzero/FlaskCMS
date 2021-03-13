@@ -27,13 +27,3 @@ class PostForm(FlaskForm):
                                    for category in Category.query.order_by(Category.name).all()]
 
 
-class PostNewForm(FlaskForm):
-    title = StringField('标题', validators=[Length(min=1, max=64, message='标题长度为1~64位'), DataRequired(message='标题不能为空')])
-    slug = StringField('别名', validators=[Length(min=1, max=64, message='别名长度为6~12位'), DataRequired(message='别名不能为空')])
-    excerpt = TextAreaField('摘要', validators=[DataRequired()])
-    # content = TextAreaField('内容', validators=[DataRequired(message='内容不能为空')])
-    content = CKEditorField('内容', validators=[DataRequired(message='内容不能为空')])
-    category = SelectField('分类')
-    status = IntegerField('状态')
-    tag = StringField('标签', validators=[DataRequired()])
-    submit = SubmitField()

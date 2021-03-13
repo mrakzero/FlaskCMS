@@ -13,18 +13,6 @@ t_post_tag = db.Table('t_post_tag',
                       )
 
 
-class Category(db.Model):
-    __tablename__ = 't_category'
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(64), nullable=False, index=True, comment='分类名称')
-    slug = db.Column(db.String(64), nullable=False, unique=True, comment='分类别名')
-    description = db.Column(db.String(256), comment='分类描述')
-    post = db.relationship('Post', backref=db.backref('t_category'), lazy='dynamic')
-
-    def __repr__(self):
-        return '<Category %r>' % self.name
-
-
 class Post(db.Model):
     __tablename__ = 't_post'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -42,7 +30,7 @@ class Post(db.Model):
     comment = db.relationship('Comment', backref=db.backref('t_post'), lazy='dynamic')
 
     def __init__(self, **kwargs):
-        super().__init__(self, **kwargs)
+        super(Post, self).__init__(self, **kwargs)
 
     def set_category(self):
         """使劲儿中文章默认分类为未分类"""

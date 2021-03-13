@@ -10,7 +10,7 @@ class Comment(db.Model):
     content = db.Column(db.Text, comment='评论内容')
     date = db.Column(db.DateTime, server_default=db.func.now(), comment='发表时间')
     postid = db.Column(db.Integer, db.ForeignKey('t_post.id'), comment='文章id')
-    parentid = db.Column(db.Integer, db.ForeignKey("comment.id"), comment='父评论id')
+    parentid = db.Column(db.Integer, db.ForeignKey("t_comment.id"), comment='父评论id')
 
     def __init__(self, name, content):
         self.name = name
