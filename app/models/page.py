@@ -20,5 +20,8 @@ class Page(db.Model):
     updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), comment='修改时间')
     status = db.Column(db.Enum(PageStatus), default=PageStatus.draft, comment='页面状态')
 
+    def __init__(self, **kwargs):
+        super(Page, self).__init__(**kwargs)
+
     def __repr__(self):
         return '<Page %r>' % self.title
