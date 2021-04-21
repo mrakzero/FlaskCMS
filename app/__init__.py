@@ -14,11 +14,13 @@ mail = Mail()
 db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()  # CKEditor CSRF
-api = Api() # restful api
+api = Api()  # restful api
 
 
 def create_app(config_name):
-    '''工厂函数'''
+    """
+    工厂函数
+    """
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)  # 通过config.py统一接口

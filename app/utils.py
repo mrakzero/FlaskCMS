@@ -58,3 +58,22 @@ def generate_user_password_hash(password):
         return 0
     else:
         return generate_password_hash(password)
+
+
+from datetime import date
+from flask import Flask as _Flask
+from flask.json import JSONEncoder as _JSONEncoder
+
+
+class JSONEncoder(_JSONEncoder):
+    """
+    重写json序列化，使得模型类的可序列化
+    """
+
+    def default(self, o):
+        if hasattr(o, 'keys') and hasattr(o, '__getitem__'):
+            return dict(o)
+        if isinstance(o, date):
+            return o.strftime('%Y-%m-%d')
+
+            super(JSONEncoder, self).default(o)

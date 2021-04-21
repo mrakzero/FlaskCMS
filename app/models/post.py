@@ -4,6 +4,7 @@ import enum
 from flask_login import current_user
 
 from app import db
+from app.models.category import Category
 from app.models.user import User
 
 t_post_tag = db.Table('t_post_tag',
