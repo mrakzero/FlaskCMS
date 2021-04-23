@@ -23,6 +23,7 @@ class Post(db.Model):
     excerpt = db.Column(db.Text, comment='摘要')
     content = db.Column(db.Text, comment='内容')
     categoryid = db.Column(db.Integer, db.ForeignKey('t_category.id'), comment='分类ID')
+    image = db.Column(db.String(500), nullable=True, comment='图片')
     publishtime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
     updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), comment='修改时间')
     counter = db.Column(db.Integer, comment='阅读计数')
@@ -54,17 +55,20 @@ class Post(db.Model):
             self.excerpt = excerpt
             db.session.commit()
 
+    def find_by_id(self, id):
+        return Post.query.filter_by(id=id).first()
+
+    def page(self, page_num, per_page):
+        return Post.query.paginate(page_num, per_page, False)
+
+    def find_by_category(self, category):
+        return Post.query.filter_by(category=category)
+
+    def verify_post_author(self, user_id):
+        if user_id == self.author_id:
+            return True
+        else:
+            return False
+
     def __repr__(self):
         return '<Post %r>' % self.title
-
-
-class Tag(db.Model):
-    __tablename__ = 't_tag'
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(64), nullable=False, index=True, comment='标签名')
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return '<Tag %r>' % self.name
