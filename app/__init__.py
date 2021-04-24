@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_restful import Api
@@ -15,7 +17,6 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()  # CKEditor CSRF
 api = Api()  # restful api
-
 
 def create_app(config_name):
     """

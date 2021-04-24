@@ -11,7 +11,7 @@ from enum import Enum, unique
 
 
 @unique
-class ErrorCodeEnum(Enum):
+class ErrorCode(Enum):
     SUCCESS = 200
     LOGIN_IS_FAIL = 1001
     PASS_WORD_INFO_NOT_FILL = 1002
@@ -42,11 +42,11 @@ class ErrorCodeEnum(Enum):
     EXCEPTION_DB = 1024
 
 
-class responseCode(object):
+class ResponseCode(object):
 
     @property
     def SUCCESS(self):
-        return {'code': 200, 'msg': '请求成功'}
+        return {'code': ErrorCode.SUCCESS, 'msg': '请求成功'}
 
     @property
     def LOGIN_IS_FAIL(self):
@@ -157,62 +157,111 @@ class responseCode(object):
         return {'code': 1024, 'msg': '数据库操作异常'}
 
     def get_struct_by_error_code(self, error_code):
-        if error_code == ErrorCodeEnum.SUCCESS:
+        if error_code == ErrorCode.SUCCESS:
             return self.SUCCESS
-        if error_code == ErrorCodeEnum.LOGIN_IS_FAIL:
+        if error_code == ErrorCode.LOGIN_IS_FAIL:
             return self.LOGIN_IS_FAIL
-        if error_code == ErrorCodeEnum.PASS_WORD_INFO_NOT_FILL:
+        if error_code == ErrorCode.PASS_WORD_INFO_NOT_FILL:
             return self.PASS_WORD_INFO_NOT_FILL
-        if error_code == ErrorCodeEnum.TWO_PASS_WORD_DIFFERENT:
+        if error_code == ErrorCode.TWO_PASS_WORD_DIFFERENT:
             return self.TWO_PASS_WORD_DIFFERENT
-        if error_code == ErrorCodeEnum.OLD_PASS_WORD_IS_NOT_FAIL:
+        if error_code == ErrorCode.OLD_PASS_WORD_IS_NOT_FAIL:
             return self.OLD_PASS_WORD_IS_NOT_FAIL
-        if error_code == ErrorCodeEnum.LOGIN_FAIL:
+        if error_code == ErrorCode.LOGIN_FAIL:
             return self.LOGIN_FAIL
-        if error_code == ErrorCodeEnum.PASS_WORD_RESET_FAIL:
+        if error_code == ErrorCode.PASS_WORD_RESET_FAIL:
             return self.PASS_WORD_RESET_FAIL
-        if error_code == ErrorCodeEnum.USER_NOT_EXIST:
+        if error_code == ErrorCode.USER_NOT_EXIST:
             return self.PASS_WORD_RESET_FAIL
-        if error_code == ErrorCodeEnum.IMPORT_CSV_FAIL:
+        if error_code == ErrorCode.IMPORT_CSV_FAIL:
             return self.IMPORT_CSV_FAIL
-        if error_code == ErrorCodeEnum.IMPORT_CSV_SUCCESS:
+        if error_code == ErrorCode.IMPORT_CSV_SUCCESS:
             return self.IMPORT_CSV_SUCCESS
-        if error_code == ErrorCodeEnum.RECORD_EXIST:
+        if error_code == ErrorCode.RECORD_EXIST:
             return self.RECORD_EXIST
-        if error_code == ErrorCodeEnum.ADD_DATA_FAIL:
+        if error_code == ErrorCode.ADD_DATA_FAIL:
             return self.ADD_DATA_FAIL
-        if error_code == ErrorCodeEnum.UPDATE_DATA_FAIL:
+        if error_code == ErrorCode.UPDATE_DATA_FAIL:
             return self.UPDATE_DATA_FAIL
-        if error_code == ErrorCodeEnum.DELETE_DATA_FAIL:
+        if error_code == ErrorCode.DELETE_DATA_FAIL:
             return self.DELETE_DATA_FAIL
-        if error_code == ErrorCodeEnum.GET_DATA_FAIL:
+        if error_code == ErrorCode.GET_DATA_FAIL:
             return self.DELETE_DATA_FAIL
-        if error_code == ErrorCodeEnum.REQUEST_VERSION_ISEXISTENCE:
+        if error_code == ErrorCode.REQUEST_VERSION_ISEXISTENCE:
             return self.REQUEST_VERSION_ISEXISTENCE
-        if error_code == ErrorCodeEnum.ALREADY_HANDLED:
+        if error_code == ErrorCode.ALREADY_HANDLED:
             return self.ALREADY_HANDLED
-        if error_code == ErrorCodeEnum.DATA_IS_NOT_EXIST:
+        if error_code == ErrorCode.DATA_IS_NOT_EXIST:
             return self.DATA_IS_NOT_EXIST
-        if error_code == ErrorCodeEnum.REQUEST_PARAM_MISSED:
+        if error_code == ErrorCode.REQUEST_PARAM_MISSED:
             return self.REQUEST_PARAM_MISSED
-        if error_code == ErrorCodeEnum.REQUEST_PARAM_FORMAT_ERROR:
+        if error_code == ErrorCode.REQUEST_PARAM_FORMAT_ERROR:
             return self.REQUEST_PARAM_FORMAT_ERROR
-        if error_code == ErrorCodeEnum.OPENTSDB_ERROR:
+        if error_code == ErrorCode.OPENTSDB_ERROR:
             return self.OPENTSDB_ERROR
-        if error_code == ErrorCodeEnum.DATA_BASE_ERROR:
+        if error_code == ErrorCode.DATA_BASE_ERROR:
             return self.DATA_BASE_ERROR
-        if error_code == ErrorCodeEnum.NOT_FOUND:
+        if error_code == ErrorCode.NOT_FOUND:
             return self.NOT_FOUND
-        if error_code == ErrorCodeEnum.BAD_REQUEST:
+        if error_code == ErrorCode.BAD_REQUEST:
             return self.BAD_REQUEST
-        if error_code == ErrorCodeEnum.FORBIDDEND:
+        if error_code == ErrorCode.FORBIDDEND:
             return self.FORBIDDEND
-        if error_code == ErrorCodeEnum.WRONGVALUE:
+        if error_code == ErrorCode.WRONGVALUE:
             return self.WRONGVALUE
-        if error_code == ErrorCodeEnum.CHECK_EXIST_ERROR:
+        if error_code == ErrorCode.CHECK_EXIST_ERROR:
             return self.CHECK_EXIST_ERROR
-        if error_code == ErrorCodeEnum.EXCEPTION_DB:
+        if error_code == ErrorCode.EXCEPTION_DB:
             return self.EXCEPTION_DB
 
 
-response_code = responseCode()
+response_code = ResponseCode()
+
+
+class ResMsg(object):
+    """
+    封装响应文本
+    """
+
+    def __init__(self, data=None, code=ResponseCode.SUCCESS,
+                 msg=ResponseMessage.SUCCESS):
+        self._data = data
+        self._msg = msg
+        self._code = code
+
+    def update(self, code=None, data=None, msg=None):
+        """
+        更新默认响应文本
+        :param code:响应状态码
+        :param data: 响应数据
+        :param msg: 响应消息
+        :return:
+        """
+        if code is not None:
+            self._code = code
+        if data is not None:
+            self._data = data
+        if msg is not None:
+            self._msg = msg
+
+    def add_field(self, name=None, value=None):
+        """
+        在响应文本中加入新的字段，方便使用
+        :param name: 变量名
+        :param value: 变量值
+        :return:
+        """
+        if name is not None and value is not None:
+            self.__dict__[name] = value
+
+    @property
+    def data(self):
+        """
+        输出响应文本内容
+        :return:
+        """
+        body = self.__dict__
+        body["data"] = body.pop("_data")
+        body["msg"] = body.pop("_msg")
+        body["code"] = body.pop("_code")
+        return body

@@ -6,120 +6,115 @@ import os
 from datetime import datetime
 from random import random
 
-from flask import Blueprint, request, flash, redirect, url_for, render_template, make_response
+from flask import Blueprint, request, flash, redirect, url_for, render_template, make_response, jsonify
+from flask_restful import fields, Resource, reqparse, marshal_with
 
-from app import db
+from app import db, api
+from app.errors.errorcode import responseCode, ResponseCode, ErrorCode
 from app.forms.post import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
 
-bp_admin_post = Blueprint('admin_post', __name__, url_prefix='/admin', template_folder='../templates/admin',
-                          static_folder='../static')
+PARSER_ARGS_STATUS = True
+
+# 声明各字段数据类型用来序列化
+resource_fields = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'slug': fields.String,
+    'authorid': fields.Integer,
+    'excerpt': fields.String,
+    'content': fields.String,
+    'categoryid': fields.Integer,
+    'image': fields.String,
+    'publishtime': fields.DateTime,
+    'updatetime': fields.DateTime,
+    'counter': fields.Integer,
+    'tag': fields.List(fields.Integer),
+    'status': fields.Boolean,
+    'comment': fields.List(fields.Integer)
+}
+
+# 获取浏览器传递的请求参数
+parser = reqparse.RequestParser()
+parser.add_argument('title', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
+parser.add_argument('slug', type=str, required=True, trim=True, location='form', help=u'')
+parser.add_argument('authorid', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
+parser.add_argument('categoryid', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
+parser.add_argument('excerpt', type=int, trim=True, help=u'')
+parser.add_argument('content', type=str, required=True, trim=True, location='form', help='')
+parser.add_argument('image', type=str, required=True, trim=True, location='form', help=u'')
+parser.add_argument('tag', type=int, trim=True, help=u'')
+parser.add_argument('status', type=str, required=True, trim=True, location='form', help='')
 
 
-@bp_admin_post.route('/post', methods=['GET'])
-def post_query():
-    posts = Post.query.all()
-    return render_template('admin/post/post.html', posts=posts)
+class Posts(Resource):
+    @marshal_with(resource_fields, envelope='resource')
+    def get(self):
+        posts = Post.query.all()
+
+        data = {
+            'status': ErrorCode.SUCCESS,
+            'msg': '获取成功',
+            'data': posts
+        }
+
+        return data
 
 
-@bp_admin_post.route('/post/new', methods=['GET', 'POST'])
-def create_post():
-    post_form = PostForm()
-    if post_form.validate_on_submit():
-        post = get_post_info(post_form)
+class Post(Resource):
+
+    def get_post_by_title(self, title):
+        return Post.get_by_title(title)
+
+    def get_posts_by_author(self, authorid):
+        return Post.get_by_authror()
+
+    def create_post(self):
+        args = parser.parse_args(strict=PARSER_ARGS_STATUS)
+
+        title = args.title
+        slug = args.slug
+        authorid = args.authorid
+        excerpt = args.excerpt
+        content = args.content
+        categoryid = args.categoryid
+        status = args.title
+        tag = args.title
+
+        post = Post(
+            title=title,
+            slug=slug,
+            authorid=authorid,
+            excerpt=excerpt,
+            content=content,
+            categoryid=categoryid,
+            status=status,
+            tag=tag,
+        )
+
         db.session.add(post)
         db.session.commit()
+
         flash('Post created.', 'success')
-        return redirect(url_for('admin.post'))
-    return render_template('admin/post/post-new.html', post_form=post_form)
+        date = dict(ResponseCode.SUCCESS)
+        return jsonify(date)
 
+    def update_post(post_id):
+        post_form = PostForm()
+        post = Post.query.get_or_404(post_id)
 
-@bp_admin_post.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
-def update_post(post_id):
-    post_form = PostForm()
-    post = Post.query.get_or_404(post_id)
-    if post_form.validate_on_submit():
-        post = get_post_info(post_form)
-        db.session.add(post)
+    def delete_post(post_id):
+        post = Post.query.get_or_404(post_id)
+        db.session.delete(post)
         db.session.commit()
-        flash('Post updated.', 'success')
+        flash('Post deleted.', 'success')
         return redirect(url_for('admin.post'))
-    post_form.title.data = post.title
-    post_form.slug.data = post.slug
-    post_form.excerpt.data = post.excerpt
-    post_form.content.data = post.content
-    post_form.categoryid.data = post.categoryid
-    post_form.status.data = post.status
-    return render_template('admin/post/post-edit.html', post_form=post_form)
 
 
-@bp_admin_post.route('/post/<int:post_id>/delete', methods=['POST'])
-def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    db.session.delete(post)
-    db.session.commit()
-    flash('Post deleted.', 'success')
-    return redirect(url_for('admin.post'))
-
-
-# 从表单中获取post信息
-def get_post_info(form):
-    title = form.title.data
-    slug = form.slug.data
-    authorid = User.query.get(form.authorid.data)
-    excerpt = form.excerpt.data
-    content = form.content.data
-    categoryid = Category.query.get(form.categoryid.data)
-    status = form.title.data
-    tag = form.title.data
-
-    post = Post(
-        title=title,
-        slug=slug,
-        authorid=authorid,
-        excerpt=excerpt,
-        content=content,
-        categoryid=categoryid,
-        status=status,
-        tag=tag,
-    )
-
-    return post
-
-# def gen_rnd_filename():
-#     filename_prefix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-#     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
-#
-#
-# @bp_admin_post.route('/upload/', methods=['POST'])
-# def ckupload():
-#     """CKEditor file upload"""
-#     error = ''
-#     url = ''
-#     callback = request.args.get("CKEditorFuncNum")
-#     if request.method == 'POST' and 'upload' in request.files:
-#         fileobj = request.files['upload']
-#         fname, fext = os.path.splitext(fileobj.filename)
-#         rnd_name = '%s%s' % (gen_rnd_filename(), fext)
-#         filepath = os.path.join(app.static_folder, 'upload', rnd_name)
-#         # 检查路径是否存在，不存在则创建
-#         dirname = os.path.dirname(filepath)
-#         if not os.path.exists(dirname):
-#             try:
-#                 os.makedirs(dirname)
-#             except:
-#                 error = 'ERROR_CREATE_DIR'
-#         elif not os.access(dirname, os.W_OK):
-#             error = 'ERROR_DIR_NOT_WRITEABLE'
-#         if not error:
-#             fileobj.save(filepath)
-#             url = url_for('static', filename='%s/%s' % ('upload', rnd_name))
-#     else:
-#         error = 'post error'
-#     res = """<script type="text/javascript">
-#   window.parent.CKEDITOR.tools.callFunction(%s, '%s', '%s');
-# </script>""" % (callback, url, error)
-#     response = make_response(res)
-#     response.headers["Content-Type"] = "text/html"
-#     return response
+api.add_resource(Posts, '/api/v1.0.0/posts', endpoint='get')
+api.add_resource(Post, '/api/v1.0.0/post/<int:id>', endpoint='get_post_by_id')
+api.add_resource(Post, '/api/v1.0.0/post/title/<String:title>', endpoint='get_post_by_name')
+api.add_resource(Post, '/api/v1.0.0/post/author/<int:atuhrorid>', endpoint='get_post_by_author')
+api.add_resource(Post, '/api/v1.0.0/post/category/<int:categoryid>', endpoint='get_post_by_category')
+api.add_resource(Post, '/api/v1.0.0/post/tag/<String:tag>', endpoint='get_post_by_tag')

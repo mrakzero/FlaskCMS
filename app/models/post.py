@@ -55,13 +55,32 @@ class Post(db.Model):
             self.excerpt = excerpt
             db.session.commit()
 
-    def find_by_id(self, id):
-        return Post.query.filter_by(id=id).first()
+    @staticmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
-    def page(self, page_num, per_page):
+    @staticmethod
+    def get_by_title(cls, title):
+        return cls.query.fiflter_by(title=title).first()
+
+    @staticmethod
+    def get_by_category(cls, categoryid):
+        return cls.query.filter_by(categoryid=categoryid)
+
+    @staticmethod
+    def get_by_authror(cls, authroid):
+        return cls.query.filter_by(authorid=authroid)
+
+    @staticmethod
+    def get_by_tag(cls, tagid):
+        return cls.query.filter_by(tagid=tagid)
+
+    @staticmethod
+    def page(page_num, per_page):
         return Post.query.paginate(page_num, per_page, False)
 
-    def find_by_category(self, category):
+    @staticmethod
+    def get_by_category(category):
         return Post.query.filter_by(category=category)
 
     def verify_post_author(self, user_id):

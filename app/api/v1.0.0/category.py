@@ -44,7 +44,7 @@ class CategoryList(Resource):
             categories = Category.query.filter().all()
         except:
             return jsonify(code=12, message='query filed.')
-        if categories == None:
+        if categories is None:
             return jsonify(code=12, message='result is none.')
 
 
@@ -53,12 +53,14 @@ class Categoty(Resource):
     @marshal_with(resource_fields)
     def create_category(self):
         # todo
-        post_parser = reqparse.RequestParser()
-        post_parser.add_argument('name', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
-        post_parser.add_argument('slug', type=str, required=True, trim=True, location='form', help=u'')
-        # post_parser.add_argument('parentid', type=int, trim=True, help=u'')
-        post_parser.add_argument('description', type=str, required=True, trim=True, location='form', help='')
-        args = post_parser.parse_args(strict=PARSER_ARGS_STATUS)
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
+        parser.add_argument('slug', type=str, required=True, trim=True, location='form', help=u'')
+        # parser.add_argument('parentid', type=int, trim=True, help=u'')
+        parser.add_argument('description', type=str, required=True, trim=True, location='form', help='')
+        args = parser.parse_args(strict=PARSER_ARGS_STATUS)
+
+
 
     @marshal_with(resource_fields)
     def get_category_by_id(self, category_id):
@@ -111,10 +113,10 @@ class Categoty(Resource):
             return jsonify(code=12, message='result is none.')
 
 
-api.add_resource(Category, '/category', endpoint='create_category')
-api.add_resource(Category, '/categories', endpoint='get_all_categories')
-api.add_resource(Category, '/category/<int:id>', endpoint='get_category_by_id')
-api.add_resource(Category, '/category/<String:name>', endpoint='create_category')
-api.add_resource(Category, '/category/<String:slug>', endpoint='create_category')
-api.add_resource(Category, '/category', endpoint='update_category')
-api.add_resource(Category, '/category/<int:id>', endpoint='delete_category')
+api.add_resource(Category, '/api/v1.0.0/category', endpoint='create_category')
+api.add_resource(Category, '/api/v1.0.0/categories', endpoint='get_all_categories')
+api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='get_category_by_id')
+api.add_resource(Category, '/api/v1.0.0/category/<String:name>', endpoint='create_category')
+api.add_resource(Category, '/api/v1.0.0/category/<String:slug>', endpoint='create_category')
+api.add_resource(Category, '/api/v1.0.0/category', endpoint='update_category')
+api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='delete_category')
