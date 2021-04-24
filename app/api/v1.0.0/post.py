@@ -10,7 +10,7 @@ from flask import Blueprint, request, flash, redirect, url_for, render_template,
 from flask_restful import fields, Resource, reqparse, marshal_with
 
 from app import db, api
-from app.errors.errorcode import responseCode, ResponseCode, ErrorCode
+from app.errors.errorcode import ResponseCode, ErrorCode
 from app.forms.post import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
