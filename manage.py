@@ -7,8 +7,9 @@ from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
 from app.models.page import Page
-from app.models.post import Post, Category, Tag
+from app.models.post import Post, Category
 from app.models.site import Site
+from app.models.tag import Tag
 from app.models.user import User, Role
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')

@@ -30,7 +30,10 @@ resource_fields = {
     'publishtime': fields.DateTime,
     'updatetime': fields.DateTime,
     'counter': fields.Integer,
-    'tag': fields.List(fields.Integer),
+    'tag': fields.List(fields.Nested({
+        'id': fields.Integer,
+        'name': fields.String
+    })),
     'status': fields.Boolean,
     'comment': fields.List(fields.Integer)
 }
@@ -112,7 +115,7 @@ class Post(Resource):
         return redirect(url_for('admin.post'))
 
 
-api.add_resource(Posts, '/api/v1.0.0/posts', endpoint='get')
+api.add_resource(Posts, '/api/v1.0.0/posts', endpoint='get_all_posts')
 api.add_resource(Post, '/api/v1.0.0/post/<int:id>', endpoint='get_post_by_id')
 api.add_resource(Post, '/api/v1.0.0/post/title/<String:title>', endpoint='get_post_by_name')
 api.add_resource(Post, '/api/v1.0.0/post/author/<int:atuhrorid>', endpoint='get_post_by_author')

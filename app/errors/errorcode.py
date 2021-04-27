@@ -46,7 +46,7 @@ class ResponseCode(object):
 
     @property
     def SUCCESS(self):
-        return {'code': ErrorCode.SUCCESS, 'msg': '请求成功'}
+        return {'code': 200, 'msg': '请求成功'}
 
     @property
     def LOGIN_IS_FAIL(self):
@@ -223,8 +223,8 @@ class ResMsg(object):
     封装响应文本
     """
 
-    def __init__(self, data=None, code=ResponseCode.SUCCESS,
-                 msg=ResponseMessage.SUCCESS):
+    def __init__(self, data=None, code=ErrorCode.SUCCESS,
+                 msg=ResponseCode.SUCCESS):
         self._data = data
         self._msg = msg
         self._code = code

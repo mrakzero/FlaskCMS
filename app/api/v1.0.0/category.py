@@ -19,7 +19,7 @@ resource_fields = {
     'id': fields.String,
     'name': fields.String,
     'slug': fields.String,
-    # 'parentid': fields.List(fields.Integer),
+    'parentid': fields.Integer,
     'description': fields.String
 }
 
@@ -59,8 +59,6 @@ class Categoty(Resource):
         # parser.add_argument('parentid', type=int, trim=True, help=u'')
         parser.add_argument('description', type=str, required=True, trim=True, location='form', help='')
         args = parser.parse_args(strict=PARSER_ARGS_STATUS)
-
-
 
     @marshal_with(resource_fields)
     def get_category_by_id(self, category_id):
@@ -113,10 +111,9 @@ class Categoty(Resource):
             return jsonify(code=12, message='result is none.')
 
 
-api.add_resource(Category, '/api/v1.0.0/category', endpoint='create_category')
-api.add_resource(Category, '/api/v1.0.0/categories', endpoint='get_all_categories')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='get_category_by_id')
-api.add_resource(Category, '/api/v1.0.0/category/<String:name>', endpoint='create_category')
-api.add_resource(Category, '/api/v1.0.0/category/<String:slug>', endpoint='create_category')
-api.add_resource(Category, '/api/v1.0.0/category', endpoint='update_category')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='delete_category')
+api.add_resource(Category, '/api/v1.0.0/category', endpoint='category')
+api.add_resource(CategoryList, '/api/v1.0.0/categories', endpoint='categories')
+api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
+api.add_resource(Category, '/api/v1.0.0/category/<String:slug>', endpoint='category')
+api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
+api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
