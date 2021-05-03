@@ -115,9 +115,9 @@ class Post(Resource):
         return redirect(url_for('admin.post'))
 
 
-api.add_resource(Posts, '/api/v1.0.0/posts', endpoint='get_all_posts')
-api.add_resource(Post, '/api/v1.0.0/post/<int:id>', endpoint='get_post_by_id')
-api.add_resource(Post, '/api/v1.0.0/post/title/<String:title>', endpoint='get_post_by_name')
-api.add_resource(Post, '/api/v1.0.0/post/author/<int:atuhrorid>', endpoint='get_post_by_author')
-api.add_resource(Post, '/api/v1.0.0/post/category/<int:categoryid>', endpoint='get_post_by_category')
-api.add_resource(Post, '/api/v1.0.0/post/tag/<String:tag>', endpoint='get_post_by_tag')
+api.add_resource(Posts, '/api/v1/posts', endpoint='get_all_posts')
+api.add_resource(Post, '/api/v1/post/<int:id>', endpoint='get_post_by_id')
+api.add_resource(Post, '/api/v1/post/title/<String:title>', endpoint='get_post_by_name')
+api.add_resource(Post, '/api/v1/post/author/<int:atuhrorid>', endpoint='get_post_by_author')
+api.add_resource(Post, '/api/v1/post/category/<int:categoryid>', endpoint='get_post_by_category')
+api.add_resource(Post, '/api/v1/post/tag/<String:tag>', endpoint='get_post_by_tag')

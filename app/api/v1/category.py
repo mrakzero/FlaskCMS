@@ -6,9 +6,10 @@
 # Time: 2021-03-13
 from importlib.resources import Resource
 
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from flask_restful import fields, marshal_with, reqparse
 
+import app
 from app import api
 from app.models.category import Category
 from app.models.post import Post
@@ -48,17 +49,27 @@ class CategoryList(Resource):
             return jsonify(code=12, message='result is none.')
 
 
-class Categoty(Resource):
+parser = reqparse.RequestParser()
+parser.add_argument('name', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
+parser.add_argument('slug', type=str, required=True, trim=True, location='form', help=u'')
+parser.add_argument('parentid', type=int, trim=True, help=u'')
+parser.add_argument('description', type=str, required=True, trim=True, location='form', help='')
+
+
+class Category(Resource):
+
+    @marshal_with(resource_fields)
+    def get(self):
+        print('hello,world!')
+        app.logger.debug('hello,world!')
+        current_app.logger.debug('this is debug!')
+        return {'msg': 'ok'}
 
     @marshal_with(resource_fields)
     def create_category(self):
         # todo
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
-        parser.add_argument('slug', type=str, required=True, trim=True, location='form', help=u'')
-        # parser.add_argument('parentid', type=int, trim=True, help=u'')
-        parser.add_argument('description', type=str, required=True, trim=True, location='form', help='')
         args = parser.parse_args(strict=PARSER_ARGS_STATUS)
+        return {'msg': 'ok'}
 
     @marshal_with(resource_fields)
     def get_category_by_id(self, category_id):
@@ -104,16 +115,16 @@ class Categoty(Resource):
 
     def delete_category(self, id):
         try:
-            categories = Category.query.filter(id=id).first()
+            category = Category.query.filter(id=id).first()
         except:
             return jsonify(code=12, message='query filed.')
-        if categories == None:
+        if category is None:
             return jsonify(code=12, message='result is none.')
 
 
-api.add_resource(Category, '/api/v1.0.0/category', endpoint='category')
-api.add_resource(CategoryList, '/api/v1.0.0/categories', endpoint='categories')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
-api.add_resource(Category, '/api/v1.0.0/category/<String:slug>', endpoint='category')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
+api.add_resource(Category, '/category', endpoint='category')
+api.add_resource(CategoryList, '/categories', endpoint='categories')
+api.add_resource(Category, '/category/<int:id>', endpoint='category')
+api.add_resource(Category, '/category/<String:slug>', endpoint='category')
+api.add_resource(Category, '/category/<int:id>', endpoint='category')
+api.add_resource(Category, '/category/<int:id>', endpoint='category')
