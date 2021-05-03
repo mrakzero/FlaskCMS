@@ -4,14 +4,11 @@
 # File: category.py
 # Author:Zhang Zhijun
 # Time: 2021-03-13
-from importlib.resources import Resource
 
-from flask import jsonify, request
-from flask_restful import fields, marshal_with, reqparse
+from flask import jsonify
+from flask_restful import fields, marshal_with, reqparse, Resource
 
-from app import api
 from app.models.category import Category
-from app.models.post import Post
 
 PARSER_ARGS_STATUS = True
 
@@ -24,21 +21,23 @@ resource_fields = {
 }
 
 
-class CategoryList(Resource):
+class CategoryListResource(Resource):
     # https://github.com/frankRose1/flask-blog-restful-api/blob/master/resources/posts.py
+
+    @marshal_with(resource_fields)
     def get(self):
-        page_num = request.args.get('page_num', 1)
-        per_page = request.args.get('per_page', 10)
-
-        try:
-            page_num = int(page_num)
-            per_page = int(per_page)
-        except ValueError:
-            return {'message': 'Make sure page_num and per_page are integers.'}, 400
-        if per_page > 10:
-            per_page = 10
-
-        paginate = Category.page(page_num, per_page)
+        # page_num = request.args.get('page_num', 1)
+        # per_page = request.args.get('per_page', 10)
+        #
+        # try:
+        #     page_num = int(page_num)
+        #     per_page = int(per_page)
+        # except ValueError:
+        #     return {'message': 'Make sure page_num and per_page are integers.'}, 400
+        # if per_page > 10:
+        #     per_page = 10
+        #
+        # paginate = Category.page(page_num, per_page)
 
         try:
             categories = Category.query.filter().all()
@@ -48,7 +47,7 @@ class CategoryList(Resource):
             return jsonify(code=12, message='result is none.')
 
 
-class Categoty(Resource):
+class CategoryResource(Resource):
 
     @marshal_with(resource_fields)
     def create_category(self):
@@ -56,7 +55,7 @@ class Categoty(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True, trim=True, location='form', help=u'请出入分类名称')
         parser.add_argument('slug', type=str, required=True, trim=True, location='form', help=u'')
-        # parser.add_argument('parentid', type=int, trim=True, help=u'')
+        parser.add_argument('parentid', type=int, trim=True, help=u'')
         parser.add_argument('description', type=str, required=True, trim=True, location='form', help='')
         args = parser.parse_args(strict=PARSER_ARGS_STATUS)
 
@@ -109,11 +108,3 @@ class Categoty(Resource):
             return jsonify(code=12, message='query filed.')
         if categories == None:
             return jsonify(code=12, message='result is none.')
-
-
-api.add_resource(Category, '/api/v1.0.0/category', endpoint='category')
-api.add_resource(CategoryList, '/api/v1.0.0/categories', endpoint='categories')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
-api.add_resource(Category, '/api/v1.0.0/category/<String:slug>', endpoint='category')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')
-api.add_resource(Category, '/api/v1.0.0/category/<int:id>', endpoint='category')

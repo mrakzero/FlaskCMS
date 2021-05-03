@@ -2,18 +2,15 @@
 # File: post.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
-import os
-from datetime import datetime
-from random import random
 
-from flask import Blueprint, request, flash, redirect, url_for, render_template, make_response, jsonify
+
+from flask import flash, redirect, url_for, jsonify
 from flask_restful import fields, Resource, reqparse, marshal_with
 
-from app import db, api
+from app import db
 from app.errors.errorcode import ResponseCode, ErrorCode
 from app.forms.post import PostForm
-from app.models.post import Category, Post
-from app.models.user import User
+from app.models.post import Post
 
 PARSER_ARGS_STATUS = True
 
@@ -51,7 +48,7 @@ parser.add_argument('tag', type=int, trim=True, help=u'')
 parser.add_argument('status', type=str, required=True, trim=True, location='form', help='')
 
 
-class Posts(Resource):
+class PostsResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
     def get(self):
         posts = Post.query.all()
@@ -65,7 +62,7 @@ class Posts(Resource):
         return data
 
 
-class Post(Resource):
+class PostResource(Resource):
 
     def get_post_by_title(self, title):
         return Post.get_by_title(title)
@@ -113,11 +110,3 @@ class Post(Resource):
         db.session.commit()
         flash('Post deleted.', 'success')
         return redirect(url_for('admin.post'))
-
-
-api.add_resource(Posts, '/api/v1.0.0/posts', endpoint='get_all_posts')
-api.add_resource(Post, '/api/v1.0.0/post/<int:id>', endpoint='get_post_by_id')
-api.add_resource(Post, '/api/v1.0.0/post/title/<String:title>', endpoint='get_post_by_name')
-api.add_resource(Post, '/api/v1.0.0/post/author/<int:atuhrorid>', endpoint='get_post_by_author')
-api.add_resource(Post, '/api/v1.0.0/post/category/<int:categoryid>', endpoint='get_post_by_category')
-api.add_resource(Post, '/api/v1.0.0/post/tag/<String:tag>', endpoint='get_post_by_tag')
