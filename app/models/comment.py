@@ -13,7 +13,7 @@ class Comment(db.Model):
     parentid = db.Column(db.Integer, db.ForeignKey("t_comment.id"), comment='父评论id')
 
     def __init__(self, **kwargs):
-        super(Comment,self).__init__(**kwargs)
+        super(Comment, self).__init__(**kwargs)
 
     def __repr__(self):
         return '<Model Comment `{}`>'.format(self.nickname)

@@ -14,6 +14,13 @@ t_post_tag = db.Table('t_post_tag',
                       )
 
 
+# t_post_comment = db.Table('t_post_comment',
+#                           db.Column('id', db.Integer, autoincrement=True, primary_key=True),
+#                           db.Column('commentid', db.Integer, db.ForeignKey('t_comment.id'), primary_key=True),
+#                           db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), primary_key=True)
+#                           )
+
+
 class Post(db.Model):
     __tablename__ = 't_post'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -29,7 +36,7 @@ class Post(db.Model):
     counter = db.Column(db.Integer, comment='阅读计数')
     tag = db.relationship('Tag', secondary=t_post_tag, backref=db.backref('t_post'), lazy='dynamic')
     status = db.Column(db.Boolean, default=True, comment='文章状态')
-    comment = db.relationship('Comment', backref=db.backref('t_post'), lazy='dynamic')
+    # comment = db.relationship('Comment', backref=db.backref('t_post'), lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(Post, self).__init__(self, **kwargs)

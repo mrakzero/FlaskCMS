@@ -44,8 +44,8 @@ class ErrorCode(Enum):
 
 class ResponseCode(object):
 
-    @property
-    def SUCCESS(self):
+    @staticmethod
+    def SUCCESS():
         return {'code': 200, 'msg': '请求成功'}
 
     @property
