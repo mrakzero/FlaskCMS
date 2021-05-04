@@ -15,13 +15,10 @@ api = Api()  # restful api
 #     api.init_app(app)
 
 
-
 def registerResources():
     # Category
-    # api.add_resource(CategoryResource, '/category/', endpoint='category')
-    api.add_resource(CategoryListResource, '/categories', endpoint='categories')
-    # api.add_resource(CategoryResource, '/category/<int:id>', endpoint='category')
-    api.add_resource(CategoryResource, '/category', endpoint='category')
+    api.add_resource(CategoryListResource, '/categories', endpoint='ep_categories')
+    api.add_resource(CategoryResource, '/category', '/category/<int:id>', endpoint='ep_category')
 
     # Post
     # api.add_resource(PostsResource, '/posts', endpoint='get_all_posts')

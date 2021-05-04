@@ -66,16 +66,27 @@ config = {
 # 配置日志
 logger_conf = {
     'version': 1,
+    # 设置输出格式
     'formatters': {'default': {
         'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
     }},
+    # 设置处理器
     'handlers': {'wsgi': {
         'class': 'logging.StreamHandler',
         'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
+        'formatter': 'default',
+        'level': 'DEBUG'
     }},
+    # 设置root日志对象配置
     'root': {
-        'level': 'INFO',
+        'level': 'DEBUG',
         'handlers': ['wsgi']
+    },
+    # 设置其他日志对象配置
+    'loggers': {
+        'test':
+            {'level': 'DEBUG',
+             'handlers': ['wsgi'],
+             'propagate': 0}
     }
 }

@@ -20,7 +20,7 @@ def page_query():
     return render_template('admin/Page/Page.html', pages=pages)
 
 
-@bp_admin_page.route('/Page/new', methods=['GET', 'Page'])
+@bp_admin_page.route('/Page/new', methods=['GET', 'POST'])
 def create_Page():
     page_form = PageForm()
     if page_form.validate_on_submit():

@@ -10,6 +10,45 @@
 from enum import Enum, unique
 
 
+# class ResponseCode(object):
+#     SUCCESS = 200
+#     LOGIN_IS_FAIL = 1001
+#     PASS_WORD_INFO_NOT_FILL = 1002
+#     TWO_PASS_WORD_DIFFERENT = 1003
+#     OLD_PASS_WORD_IS_NOT_FAIL = 1004
+#     LOGIN_FAIL = 1005
+#     PASS_WORD_RESET_FAIL = 1006
+#     USER_NOT_EXIST = 1007
+#     IMPORT_CSV_FAIL = 1008
+#     IMPORT_CSV_SUCCESS = 1009
+#     RECORD_EXIST = 1010
+#     ADD_DATA_FAIL = 1011
+#     UPDATE_DATA_FAIL = 1012
+#     DELETE_DATA_FAIL = 1013
+#     GET_DATA_FAIL = 1014
+#     REQUEST_VERSION_ISEXISTENCE = 1015
+#     ALREADY_HANDLED = 1016
+#     DATA_IS_NOT_EXIST = 1017
+#     REQUEST_PARAM_MISSED = 1018
+#     EQUEST_PARAM_FORMAT_ERROR = 1019
+#     OPENTSDB_ERROR = 1020
+#     DATA_BASE_ERROR = 1021
+#     NOT_FOUND = 404
+#     BAD_REQUEST = 400
+#     FORBIDDEND = 403
+#     WRONGVALUE = 1022
+#     CHECK_EXIST_ERROR = 1023
+#     EXCEPTION_DB = 1024
+
+
+# class ResponseMessage(object):
+#     SUCCESS = "成功"
+#     FAIL = "失败"
+#     NO_RESOURCE_FOUND = "未找到资源"
+#     INVALID_PARAMETER = "参数无效"
+#     ACCOUNT_OR_PASS_WORD_ERR = "账户或密码错误"
+
+
 @unique
 class ErrorCode(Enum):
     SUCCESS = 200
