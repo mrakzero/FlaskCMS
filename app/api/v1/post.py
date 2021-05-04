@@ -8,7 +8,7 @@ from flask import flash, redirect, url_for, jsonify
 from flask_restful import fields, Resource, reqparse, marshal_with
 
 from app import db
-from app.errors.errorcode import ResponseCode, ErrorCode
+from app.errors.errorcode import ResponseCode
 from app.forms.post import PostForm
 from app.models.post import Post
 
@@ -54,7 +54,7 @@ class PostsResource(Resource):
         posts = Post.query.all()
 
         data = {
-            'status': ErrorCode.SUCCESS,
+            'status': ResponseCode.SUCCESS,
             'msg': '获取成功',
             'data': posts
         }

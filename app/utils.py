@@ -12,11 +12,11 @@ from app.models.user import Role, User
 def add_default_data():
     # 实例化ROM对象
     # 添加默认角色
-    administrator = Role("administrator","管理员", "管理员拥有全部权限")
-    editor = Role("editor","编辑", "可以对文章、标签、分类、页面、友情链接、评论进行管理")
-    author = Role("author","作者", "所发表的文章无需管理员审核即可显示，还可以编辑已通过审核的文章，并且拥有媒体库的使用权限")
-    contributor = Role("contributor","投稿者", "可以发表或删除自己的文章，但所发文章需经管理员审核后才能在博客上显示")
-    subscriber = Role("subscriber","订阅者", "只允许修改自己的个人资料，例如昵称、联系方式、密码等等")
+    administrator = Role("administrator", "管理员", "管理员拥有全部权限")
+    editor = Role("editor", "编辑", "可以对文章、标签、分类、页面、友情链接、评论进行管理")
+    author = Role("author", "作者", "所发表的文章无需管理员审核即可显示，还可以编辑已通过审核的文章，并且拥有媒体库的使用权限")
+    contributor = Role("contributor", "投稿者", "可以发表或删除自己的文章，但所发文章需经管理员审核后才能在博客上显示")
+    subscriber = Role("subscriber", "订阅者", "只允许修改自己的个人资料，例如昵称、联系方式、密码等等")
     if Role.query.filter_by(code='administrator') or Role.query.filter_by(code='editor') or Role.query.filter_by(
             code='author') or Role.query.filter_by(code='contributor') or Role.query.filter_by(code='subscriber'):
         pass
@@ -52,7 +52,6 @@ def add_default_data():
     db.session.commit()
 
 
-@staticmethod
 def generate_user_password_hash(password):
     if password == '':
         return 0
@@ -61,7 +60,6 @@ def generate_user_password_hash(password):
 
 
 from datetime import date
-from flask import Flask as _Flask
 from flask.json import JSONEncoder as _JSONEncoder
 
 
@@ -77,3 +75,17 @@ class JSONEncoder(_JSONEncoder):
             return o.strftime('%Y-%m-%d')
 
             super(JSONEncoder, self).default(o)
+
+
+def serialize(model):
+    """
+    flask sqlalchemy model object convert to json
+    example:
+    def model_to_json_test():
+        q = db.session.query(Post).first()  # db = SQLAlchemy()
+        q_dict = serialize(q)
+        return jsonify(q_dict)
+    """
+    from sqlalchemy.orm import class_mapper
+    columns = [c.key for c in class_mapper(model.__class__).columns]
+    return dict((c, getattr(model, c)) for c in columns)

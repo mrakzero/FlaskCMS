@@ -9,8 +9,9 @@ from flask import jsonify, request, flash, current_app
 from flask_restful import fields, marshal_with, reqparse, Resource
 
 from app import db
-from app.errors.errorcode import ResponseCode
+from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.category import Category
+from app.utils import serialize
 
 PARSER_ARGS_STATUS = True
 
@@ -68,22 +69,24 @@ class CategoryListResource(Resource):
             return jsonify(code=12, message='query filed.')
         if categories is None:
             return jsonify(code=12, message='result is none.')
+        current_app.logger.debug("categories: %s", categories)
 
         return categories
 
 
 class CategoryResource(Resource):
-    @marshal_with(resource_fields)
+
     def get(self, id):
         try:
             category = Category.query.filter_by(id=id).first()
         except:
-            return jsonify(code=12, message='query filed.')
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if category is None:
-            return jsonify(code=12, message='result is none.')
-        return category
+            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(category))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(data)
 
-    @marshal_with(resource_fields)
     def post(self):
         # todo
 
@@ -91,7 +94,7 @@ class CategoryResource(Resource):
 
         if (Category.query.filter_by(slug=args.slug).count() > 0) or (
                 Category.query.filter_by(name=args.name).count() > 0):
-            return jsonify(code=11, message='category already exist.')
+            return jsonify(code=ResponseCode.CATEGORY_ALREADY_EXIST, message=ResponseMessage.CATEGORY_ALREADY_EXIST)
 
         category = Category(
             name=args.name,
@@ -102,18 +105,17 @@ class CategoryResource(Resource):
         db.session.commit()
 
         flash('Post created.', 'success')
-        # date = ResponseCode.SUCCESS
-        # return jsonify(ResponseCode.SUCCESS())
-        return category
+        data = dict(code=ResponseCode.CREATE_CATEGORY_SUCCESS, message=ResponseMessage.CREATE_CATEGORY_SUCCESS)
+        return jsonify(data)
 
     def put(self, id):
         args = parser.parse_args(strict=PARSER_ARGS_STATUS)
         try:
             category = Category.query.filter_by(id=id).first()
         except:
-            return jsonify(code=12, message='query filed.')
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if category is None:
-            return jsonify(code=12, message='result is none.')
+            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
 
         category.name = args.name
         category.slug = args.slug
@@ -123,8 +125,8 @@ class CategoryResource(Resource):
         db.session.commit()
 
         flash('Post created.', 'success')
-        date = ResponseCode.SUCCESS
-        return jsonify(ResponseCode.SUCCESS())
+        date = dict(code=ResponseCode.UPDATE_CATEGORY_SUCCESS, message=ResponseMessage.UPDATE_CATEGORY_SUCCESS)
+        return jsonify(date)
 
     def delete(self, id):
         """
@@ -134,18 +136,19 @@ class CategoryResource(Resource):
         try:
             category = Category.query.filter_by(id=id).first()
         except:
-            return jsonify(code=12, message='query filed.')
-        if category == None:
-            return jsonify(code=12, message='result is none.')
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+        if category is None:
+            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
 
         db.session.delete(category)
         db.session.commit()
-        flash('Post deleted.', 'success')
+        flash('Category deleted.', 'success')
 
         # 未分类文章处理方法
         # TODO
 
-        return jsonify(ResponseCode.SUCCESS())
+        date = dict(code=ResponseCode.DELETE_CATEGORY_SUCCESS, message=ResponseMessage.DELETE_CATEGORY_SUCCESS)
+        return jsonify(date)
 
 
 def get_category_info(args):
