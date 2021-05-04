@@ -6,8 +6,10 @@ from app import create_app, db
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
+from app.models.category import Category
+from app.models.comment import Comment
 from app.models.page import Page
-from app.models.post import Post, Category
+from app.models.post import Post
 from app.models.site import Site
 from app.models.tag import Tag
 from app.models.user import User, Role
@@ -18,7 +20,8 @@ migrate = Migrate(app, db)
 
 
 def make_shell_context():
-    return dict(app=app, db=db, User=User, Role=Role, Post=Post, Category=Category, Page=Page, Tag=Tag, Site=Site)
+    return dict(app=app, db=db, User=User, Role=Role, Post=Post, Category=Category, Page=Page, Tag=Tag, Comment=Comment,
+                Site=Site)
 
 
 manager.add_command('shell', Shell(make_context=make_shell_context))
