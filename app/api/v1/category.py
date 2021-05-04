@@ -66,9 +66,9 @@ class CategoryListResource(Resource):
         try:
             categories = Category.query.filter().all()
         except:
-            return jsonify(code=12, message='query filed.')
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if categories is None:
-            return jsonify(code=12, message='result is none.')
+            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
         current_app.logger.debug("categories: %s", categories)
 
         return categories

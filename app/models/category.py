@@ -12,16 +12,6 @@ class Category(db.Model):
 
     def __init__(self, **kwargs):
         super(Category, self).__init__(**kwargs)
-        if (Category.query.all().count == 0):
-            self.name = '未分类'
-            self.parentid = 'default'
-            self.description = 'Default category'
 
     def __repr__(self):
         return '<Category %r>' % self.name
-
-    # def keys(self):
-    #     return ['id', 'name', 'slug', 'parentid', 'post', 'description']
-    #
-    # def __getitem__(self, item):
-    #     return getattr(self, item)
