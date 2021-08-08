@@ -1,3 +1,5 @@
+from graphene_sqlalchemy import SQLAlchemyObjectType
+
 from app import db
 
 
@@ -15,3 +17,10 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category %r>' % self.name
+
+
+# class CategorySchema(SQLAlchemyObjectType):
+#     class Meta:
+#         description = 'Schema of Category.'
+#         model = Category
+#         only_fields = ('name', 'slug', 'post')

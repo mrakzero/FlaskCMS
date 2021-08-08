@@ -39,7 +39,7 @@ class Post(db.Model):
     comment = db.relationship('Comment', backref=db.backref('t_post'), lazy='dynamic')
 
     def __init__(self, **kwargs):
-        super(Post, self).__init__(self, **kwargs)
+        super(Post, self).__init__(**kwargs)
 
     def set_category(self):
         """使劲儿中文章默认分类为未分类"""
