@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8">
     {% if title %}
-        <title>{{ title }}</title>
+    <title>{{ title }}</title>
     {% else %}
-        <title>FlaskCMS</title>
+    <title>FlaskCMS</title>
     {% endif %}
     {% if keywords %}
-        <meta name="keywords" content="{{ keywords }}">
+    <meta name="keywords" content="{{ keywords }}">
     {% else %}
-        <meta name="keywords" content="FlaskCMS">
+    <meta name="keywords" content="FlaskCMS">
     {% endif %}
     {% if keywords %}
-        <meta name="description" content="{{ description }}">
+    <meta name="description" content="{{ description }}">
     {% else %}
-        <meta name="description"
-              content="FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便的的搭建自己的内容管理系统或者博客系统">
+    <meta name="description"
+          content="FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便的的搭建自己的内容管理系统或者博客系统">
     {% endif %}
 
     <meta name="renderer" content="webkit">
@@ -28,31 +28,36 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" href="../../static/images/favicon.ico">
     {% block style %}
-        <link rel="stylesheet" href="../../static/lib/layui/css/layui.css" media="all">
-        <!--[if lt IE 9]>
-        <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-        <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <link rel="stylesheet" href="../../static/lib/layui/css/layui.css" media="all">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
     {% endblock %}
 </head>
 <body>
-<div class="layui-layout-body">
+<div class="layui-fluid">
     {% include 'cms/header.html' %}
+</div>
+<div class="layui-container">
     {% block main %}{% endblock %}
+</div>
+<div class="layui-fluid">
     {% include 'cms/footer.html' %}
 </div>
 
 
-
 {% block script %}
-    <script src="../../static/lib/layui/layui.all.js" charset="utf-8"></script>
-    <script>
+<script src="../../static/lib/layui/layui.all.js" charset="utf-8"></script>
+<script>
         //JavaScript代码区域
         layui.use('element', function () {
             var element = layui.element;
 
         });
-    </script>
+
+
+</script>
 {% endblock %}
 
 </body>

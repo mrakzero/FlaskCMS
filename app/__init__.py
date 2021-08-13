@@ -50,6 +50,31 @@ def create_app(config_name):
     registerResources()
     api.init_app(app)
 
+    # 若使用Jija2模板，请打开蓝图的注释
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
+    # import app.views.admin.index as admin_index
+    # import app.views.admin.post as admin_post
+    # import app.views.admin.category as admin_category
+    # import app.views.admin.page as admin_page
+    # import app.views.admin.media as admin_media
+    # import app.views.admin.setting as admin_setting
+    # import app.views.admin.user as admin_user
+    #
+    # import app.views.cms.index as cms_index
+    # import app.views.cms.post as cms_post
+    # import app.views.cms.category as cms_category
+    # import app.views.cms.page as cms_page
+    #
+    # app.register_blueprint(cms_index.bp_cms_index)
+    # app.register_blueprint(cms_category.bp_cms_category)
+    # app.register_blueprint(cms_post.bp_cms_post)
+    # app.register_blueprint(cms_page.bp_cms_page)
+    #
+    # app.register_blueprint(admin_index.bp_admin_index)
+    # app.register_blueprint(admin_post.bp_admin_post)
+    # app.register_blueprint(admin_page.bp_admin_page)
+    # app.register_blueprint(admin_media.bp_admin_media)
+    # app.register_blueprint(admin_user.bp_admin_user)
+    # app.register_blueprint(admin_setting.bp_admin_setting)
 
     return app

@@ -9,7 +9,9 @@ from flask_restful import fields, Resource, reqparse, marshal_with
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
+from app.models.category import Category
 from app.models.post import Post
+from app.models.user import User
 from app.utils import serialize
 
 PARSER_ARGS_STATUS = True
@@ -47,13 +49,13 @@ resource_fields = {
 # 获取浏览器传递的请求参数
 parser = reqparse.RequestParser()
 parser.add_argument('title', type=str, required=True, trim=True, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请出入分类名称')
+                    help=u'请输入分类名称')
 parser.add_argument('slug', type=str, required=True, trim=True, location=[u'json', u'form', u'args', u'values'],
                     help=u'')
 parser.add_argument('authorid', type=int, required=True, trim=True, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请出入分类名称')
+                    help=u'请输入分类名称')
 parser.add_argument('categoryid', type=int, required=True, trim=True, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请出入分类名称')
+                    help=u'请输入分类名称')
 parser.add_argument('excerpt', type=str, trim=True, location=[u'json', u'form', u'args', u'values'], help=u'')
 parser.add_argument('content', type=str, required=True, trim=True, location=[u'json', u'form', u'args', u'values'],
                     help='')
@@ -68,7 +70,12 @@ class PostListResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
     def get(self):
         try:
-            posts = Post.query.filter().all()
+            # posts = Post.query.filter().all()
+            posts = Post.query.join(Category, (Category.id == Post.categoryid)) \
+                .join(User, (User.id == Post.authorid)) \
+                .with_entitles(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
+                               Post.publishtime) \
+                .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
@@ -79,17 +86,29 @@ class PostListResource(Resource):
 
 
 class PostResource(Resource):
-
+    @marshal_with(resource_fields, envelope='resource')
     def get(self, id):
         try:
-            post = Post.query.filter_by(id=id).first()
+            # post = Post.query.filter_by(id=id).first()
+            # post = db.session.query(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
+            #                         Post.publishtime) \
+            #     .filter(Post.id==id) \
+            #     .filter(Post.categoryid == Category.id) \
+            #     .filter(Post.authorid == User.id)
+            post = Post.query.join(Category, (Category.id == Post.categoryid)) \
+                .join(User, (User.id == Post.authorid)) \
+                .filter(Post.id == id) \
+                .all()
+
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+
         if post is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
-        current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        current_app.logger.debug("post: %s", post)
+        # data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
+        # current_app.logger.debug("data: %s", data)
+        return post
 
     def post(self):
         current_app.logger.debug("Enter post function")

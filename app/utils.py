@@ -2,11 +2,14 @@
 # File: utils.py
 # Author: Zhangzhijun
 # Date: 2021/2/15 11:41
+import datetime
+
 from werkzeug.security import generate_password_hash
 
 from app import db
 from app.models.post import Category, Post
 from app.models.user import Role, User
+from flask.json import JSONEncoder as _JSONEncoder
 
 
 def add_default_data():
@@ -59,10 +62,6 @@ def generate_user_password_hash(password):
         return generate_password_hash(password)
 
 
-from datetime import date
-from flask.json import JSONEncoder as _JSONEncoder
-
-
 class JSONEncoder(_JSONEncoder):
     """
     重写json序列化，使得模型类的可序列化
@@ -75,6 +74,26 @@ class JSONEncoder(_JSONEncoder):
             return o.strftime('%Y-%m-%d')
 
             super(JSONEncoder, self).default(o)
+
+
+class SerializrableMixin(object):
+    """A SQLAlchemy mixin class that can serialize itself as a JSON object"""
+
+    def to_dict(self):
+        """Return dict representation of class by iterating over database columns."""
+        value = {}
+        for column in self.__table__.columns:
+            attribute = getattr(self, column.name)
+            if isinstance(attribute, datetime.datetime):
+                attribute = str(attribute)
+            value[column.name] = attribute
+        return value
+
+    def from_dict(self, attributes):
+        """Update the current instance base on attribute->value by *attributes*"""
+        for attribute in attributes:
+            setattr(self, attribute, attributes[attribute])
+        return self
 
 
 def serialize(model):

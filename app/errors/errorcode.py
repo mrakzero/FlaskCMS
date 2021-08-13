@@ -27,6 +27,7 @@ class ResponseCode(object):
 
     REGISTER_SUCCESS = 20001000
     LOGIN_SUCCESS = 20001001
+    LOGOUT_SUCCESS = 20001002
 
     CREATE_USER_SUCCESS = 20002000
     UPDATE_USER_SUCCESS = 20002001
@@ -61,6 +62,7 @@ class ResponseMessage(object):
 
     REGISTER_SUCCESS = u"注册成功"
     LOGIN_SUCCESS = u"登录成功"
+    LOGOUT_SUCCESS = u"退出成功"
 
     CREATE_USER_SUCCESS = u"创建用户成功"
     UPDATE_USER_SUCCESS = u"更新用户信息成功"

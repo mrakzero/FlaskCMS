@@ -11,15 +11,15 @@ class Config(object):  # 所有配置类的父类，通用的配置写在这里
     TESTING = False  # 测试模式的设置，无限接近线上环境，不会重启项目，日志级别较高，不会在前端显示错误代码
     WTF_CSRF_ENABLED = False  # 激活跨站点请求伪造保护
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-    # PERMANENT_SESSION_LIFETIME = timedelta(days=31),  # session有效期时间的设置
-    # SESSION_COOKIE_NAME = "session"  # cookies中存储的session字符串的键
-    # SESSION_COOKIE_DOMAIN = None  # session作用域
-    # SESSION_COOKIE_PATH = None  # session作用的请求路径
-    # SESSION_COOKIE_HTTPONLY = True  # session是否只支持http请求方式
-    # SESSION_COOKIE_SECURE = False  # session安全配置
-    # SESSION_COOKIE_SAMESITE = None
-    # SESSION_REFRESH_EACH_REQUEST = True
-    # JSONIFY_MIMETYPE = "application/json"  # 设置jsonify响应时返回的contentype类型
+    PERMANENT_SESSION_LIFETIME = timedelta(days=31),  # session有效期时间的设置
+    SESSION_COOKIE_NAME = "session"  # cookies中存储的session字符串的键
+    SESSION_COOKIE_DOMAIN = None  # session作用域
+    SESSION_COOKIE_PATH = None  # session作用的请求路径
+    SESSION_COOKIE_HTTPONLY = True  # session是否只支持http请求方式
+    SESSION_COOKIE_SECURE = False  # session安全配置
+    SESSION_COOKIE_SAMESITE = None
+    SESSION_REFRESH_EACH_REQUEST = True
+    JSONIFY_MIMETYPE = "application/json"  # 设置jsonify响应时返回的contentype类型
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     FLASKY_MAIL_SUBJECT_PREFIX = '[FlaskCMS]'

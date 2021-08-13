@@ -9,7 +9,7 @@ from random import random
 from flask import Blueprint, request, flash, redirect, url_for, render_template, make_response
 
 from app import db
-from app.forms.post import PostForm, PostNewForm
+from app.forms.post import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
 
@@ -86,7 +86,6 @@ def get_post_info(form):
     )
 
     return post
-
 
 # def gen_rnd_filename():
 #     filename_prefix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')

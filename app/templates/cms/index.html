@@ -2,25 +2,25 @@
 
 
 {% block main %}
-    {{ super() }}
-    <div class="layui-container">
+{{ super() }}
+
+<div class="layui-row">
+    <div class="layui-col-lg8 cms-main">
+
         <div class="layui-row">
-            <div class="layui-col-lg8 cms-main">
-
-                <div class="layui-row">
-                    <div class="layui-col-lg12">main</div>
-                </div>
-
-            </div>
-            <div class="layui-col-lg4 cms-sider">
-
-                <div class="layui-row">
-                    <div class="layui-col-lg12">sider</div>
-                </div>
-
-            </div>
+            <div class="layui-col-lg12">main</div>
         </div>
 
     </div>
+    <div class="layui-col-lg4 cms-sider">
+
+        <div class="layui-row">
+            <div class="layui-col-lg12">sider</div>
+        </div>
+
+    </div>
+</div>
+
+
 {% endblock %}
 
