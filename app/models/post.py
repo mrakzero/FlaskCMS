@@ -8,17 +8,16 @@ from app.models.category import Category
 from app.models.user import User
 
 t_post_tag = db.Table('t_post_tag',
-                      # db.Column('id', db.Integer, autoincrement=True, primary_key=True),
+                      db.Column('id', db.Integer, autoincrement=True, primary_key=True),
                       db.Column('tagid', db.Integer, db.ForeignKey('t_tag.id'), index=True),
                       db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), index=True)
                       )
 
-
-# t_post_comment = db.Table('t_post_comment',
-#                           db.Column('id', db.Integer, autoincrement=True, primary_key=True),
-#                           db.Column('commentid', db.Integer, db.ForeignKey('t_comment.id'), primary_key=True),
-#                           db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), primary_key=True)
-#                           )
+t_post_comment = db.Table('t_post_comment',
+                          db.Column('id', db.Integer, autoincrement=True, primary_key=True),
+                          db.Column('commentid', db.Integer, db.ForeignKey('t_comment.id'), primary_key=True),
+                          db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), primary_key=True)
+                          )
 
 
 class Post(db.Model):

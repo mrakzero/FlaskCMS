@@ -18,7 +18,6 @@ resource_fields = {
     'id': fields.String,
     'username': fields.String,
     'nickname': fields.String,
-    'password_hash': fields.String,
     'email': fields.String
 }
 
