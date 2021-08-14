@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import datetime
 import enum
 
 from flask_login import UserMixin
+from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
@@ -14,8 +16,9 @@ class UserStatus(enum.Enum):
 
 t_role_permission = db.Table('t_role_permission',
                              db.Column('id', db.Integer, autoincrement=True, primary_key=True),
-                             db.Column('roleid', db.Integer, db.ForeignKey('t_role.id')),
-                             db.Column('permissionid', db.Integer, db.ForeignKey('t_permission.id')))
+                             db.Column('roleid', db.Integer, db.ForeignKey('t_role.id'), index=True),
+                             db.Column('permissionid', db.Integer, db.ForeignKey('t_permission.id'), index=True)
+                             )
 
 
 class Permission(db.Model):
@@ -59,13 +62,13 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(256), nullable=False, comment='密码')
     email = db.Column(db.String(128), nullable=False, unique=True, comment='邮件')
     roleid = db.Column(db.Integer, db.ForeignKey('t_role.id'), comment='角色ID')
-    registertime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
-    status = db.Column(db.Boolean, default=True, comment='用户状态')
+    # registertime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
+    registertime = db.Column(db.DateTime, default=datetime.datetime.now, comment='创建时间')
+    status = db.Column(db.Boolean, server_default=text('1'), comment='用户状态')
     post = db.relationship('Post', backref=db.backref('t_user'), lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
-
 
     def set_password(self, password):
         """用来设置密码的方法，接受密码作为参数,将生成的密码保持到对应字段"""

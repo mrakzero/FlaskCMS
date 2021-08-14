@@ -70,7 +70,7 @@ class JSONEncoder(_JSONEncoder):
     def default(self, o):
         if hasattr(o, 'keys') and hasattr(o, '__getitem__'):
             return dict(o)
-        if isinstance(o, date):
+        if isinstance(o, datetime.date):
             return o.strftime('%Y-%m-%d')
 
             super(JSONEncoder, self).default(o)

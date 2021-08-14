@@ -68,22 +68,28 @@ parser.add_argument('status', type=bool, required=True, trim=True, location=[u'j
 
 
 class PostListResource(Resource):
-    @marshal_with(resource_fields, envelope='resource')
+    # @marshal_with(resource_fields, envelope='resource')
     def get(self):
+        current_app.logger.debug("Enter get function!")
         try:
             # posts = Post.query.filter().all()
+            # posts = Post.query.join(Category, (Category.id == Post.categoryid)) \
+            #     .join(User, (User.id == Post.authorid)) \
+            #     .with_entitles(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
+            #                    Post.publishtime) \
+            #     .all()
             posts = Post.query.join(Category, (Category.id == Post.categoryid)) \
                 .join(User, (User.id == Post.authorid)) \
-                .with_entitles(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
-                               Post.publishtime) \
                 .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        current_app.logger.debug("posts: %s", posts)
 
-        return posts
+        post_dict = [lambda: post for post in posts]
+        current_app.logger.debug("posts: %s", serialize(post_dict))
+
+        return post_dict
 
 
 class PostResource(Resource):
@@ -100,10 +106,9 @@ class PostResource(Resource):
                 .join(User, (User.id == Post.authorid)) \
                 .filter(Post.id == id) \
                 .all()
-
+            current_app.logger.debug("post: %s", post)
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-
         if post is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         current_app.logger.debug("post: %s", post)

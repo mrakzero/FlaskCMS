@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import datetime
 import enum
+
 
 from flask_login import current_user
 
@@ -15,8 +17,8 @@ t_post_tag = db.Table('t_post_tag',
 
 t_post_comment = db.Table('t_post_comment',
                           db.Column('id', db.Integer, autoincrement=True, primary_key=True),
-                          db.Column('commentid', db.Integer, db.ForeignKey('t_comment.id'), primary_key=True),
-                          db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), primary_key=True)
+                          db.Column('commentid', db.Integer, db.ForeignKey('t_comment.id'), index=True),
+                          db.Column('postid', db.Integer, db.ForeignKey('t_post.id'), index=True)
                           )
 
 
@@ -29,9 +31,12 @@ class Post(db.Model):
     excerpt = db.Column(db.Text, comment='摘要')
     content = db.Column(db.Text, comment='内容')
     categoryid = db.Column(db.Integer, db.ForeignKey('t_category.id'), comment='分类ID')
+    # category = db.relationship('Category', backref=db.backref('t_post', lazy=True))
     image = db.Column(db.String(500), nullable=True, comment='图片')
-    publishtime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
-    updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), comment='修改时间')
+    # publishtime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
+    # updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), comment='修改时间')
+    publishtime = db.Column(db.DateTime, default=datetime.datetime.now, comment='创建时间')
+    updatetime = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, comment='修改时间')
     counter = db.Column(db.Integer, comment='阅读计数')
     tag = db.relationship('Tag', secondary=t_post_tag, backref=db.backref('t_post'), lazy='dynamic')
     status = db.Column(db.Boolean, default=True, comment='文章状态')

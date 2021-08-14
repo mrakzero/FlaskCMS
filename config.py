@@ -7,18 +7,17 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):  # 所有配置类的父类，通用的配置写在这里
-    DEBUG = True  # debug模式的设置,开发环境用，自动重启项目，日志级别低，报错在前端显示具体代码
-    TESTING = False  # 测试模式的设置，无限接近线上环境，不会重启项目，日志级别较高，不会在前端显示错误代码
+    DEBUG = True
     WTF_CSRF_ENABLED = False  # 激活跨站点请求伪造保护
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-    PERMANENT_SESSION_LIFETIME = timedelta(days=31),  # session有效期时间的设置
-    SESSION_COOKIE_NAME = "session"  # cookies中存储的session字符串的键
-    SESSION_COOKIE_DOMAIN = None  # session作用域
-    SESSION_COOKIE_PATH = None  # session作用的请求路径
-    SESSION_COOKIE_HTTPONLY = True  # session是否只支持http请求方式
-    SESSION_COOKIE_SECURE = False  # session安全配置
-    SESSION_COOKIE_SAMESITE = None
-    SESSION_REFRESH_EACH_REQUEST = True
+    # PERMANENT_SESSION_LIFETIME = timedelta(days=31),  # session有效期时间的设置
+    # SESSION_COOKIE_NAME = "session"  # cookies中存储的session字符串的键
+    # SESSION_COOKIE_DOMAIN = None  # session作用域
+    # SESSION_COOKIE_PATH = None  # session作用的请求路径
+    # SESSION_COOKIE_HTTPONLY = True  # session是否只支持http请求方式
+    # SESSION_COOKIE_SECURE = False  # session安全配置
+    # SESSION_COOKIE_SAMESITE = None
+    # SESSION_REFRESH_EACH_REQUEST = True
     JSONIFY_MIMETYPE = "application/json"  # 设置jsonify响应时返回的contentype类型
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -36,18 +35,20 @@ class Config(object):  # 所有配置类的父类，通用的配置写在这里
 
 
 class DevelopmentConfig(Config):  # 开发环境配置类
-    DEBUG = True
+    DEBUG = True  # debug模式的设置,开发环境用，自动重启项目，日志级别低，报错在前端显示具体代码
+    TESTING = False  # 测试模式的设置，无限接近线上环境，不会重启项目，日志级别较高，不会在前端显示错误代码
     MAIL_SERVER = 'smtp.flaskcms.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
     MAIL_USERNAME = 'user@flaskcms.com'
     MAIL_PASSWORD = 'xxxxxx'
     SQLALCHEMY_ECHO = True  # 如果设置成 True，SQLAlchemy 将会记录所有发到标准输出(stderr)的语句
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    SQLALCHEMY_DATABASE_URI = 'postgresql://flaskcms:flaskcms@localhost/flaskcms'
 
 
 class TestingConfig(Config):  # 测试环境配置类
-    TESTING = True
+    DEBUG = False  # debug模式的设置,开发环境用，自动重启项目，日志级别低，报错在前端显示具体代码
+    TESTING = True  # 测试模式的设置，无限接近线上环境，不会重启项目，日志级别较高，不会在前端显示错误代码
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
 
 
