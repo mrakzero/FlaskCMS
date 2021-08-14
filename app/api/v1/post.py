@@ -10,7 +10,8 @@ from flask_restful import fields, Resource, reqparse, marshal_with
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.category import Category
-from app.models.post import Post
+from app.models.post import Post, t_post_tag
+from app.models.tag import Tag
 from app.models.user import User
 from app.utils import serialize
 
@@ -133,14 +134,40 @@ class PostResource(Resource):
         return jsonify(data)
 
     def put(self, post_id):
-        post = Post.query.get_or_404(post_id)
+        current_app.logger.debug("Enter put function")
+        args = parser.parse_args(strict=PARSER_ARGS_STATUS)
+        current_app.logger.debug("args: %s", args)
+
+        try:
+            post = Post.query.filter_by(id=post_id).first()
+        except:
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+        if post is None:
+            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+
+        post.title = args.title,
+        post.slug = args.slug,
+        post.excerpt = args.excerpt,
+        post.content = args.content,
+        post.categoryid = args.categoryid,
+        post.status = args.status
+        db.session.commit()
+        data = dict(code=ResponseCode.UPDATE_POST_SUCCESS, message=ResponseMessage.UPDATE_POST_SUCCESS)
+        return jsonify(data)
 
     def delete(self, post_id):
-        post = Post.query.get_or_404(post_id)
+        try:
+            post = Post.query.filter_by(id=post_id).first()
+        except:
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+        if post is None:
+            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+
         db.session.delete(post)
         db.session.commit()
         flash('Post deleted.', 'success')
-        return redirect(url_for('admin.post'))
+        data = dict(code=ResponseCode.DELETE_POST_SUCCESS, message=ResponseMessage.DELETE_POST_SUCCESS)
+        return jsonify(data)
 
 
 # get post by post name
@@ -173,29 +200,43 @@ class PostAuthorResource(Resource):
         return jsonify(data)
 
 
-# get posts by category id
+# get posts by category
 class PostCategoryResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
-    def get(self, categoryid):
+    def get(self, category_name):
         try:
-            post = Post.query.filter_by(categoryid=categoryid).first()
+            category = Category.query.filter_by(name=category_name).first()
+            posts = Post.query.filter_by(categoryid=category.id).all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if post is None:
+        if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(posts))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
-# class PostTagResource(Resource):
-#     @marshal_with(resource_fields, envelope='resource')
-#     def get(self, tag):
-#         try:
-#             post = Post.query.filter_by(tag=tag).first()
-#         except:
-#             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-#         if post is None:
-#             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-#         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
-#         current_app.logger.debug("data: %s", data)
-#         return jsonify(data)
+
+# get posts by tag
+class PostTagResource(Resource):
+    @marshal_with(resource_fields, envelope='resource')
+    def get(self, tag_name):
+        # todo
+        try:
+            # 多对多关系中获取对象,只能用get(id)方法,不能通过filter或者filter_by来获取
+            tag = Tag.query.get(tag_name)
+            # post = db.session.query(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
+            #                         Post.publishtime) \
+            #     .filter(Post.id==id) \
+            #     .filter(Post.categoryid == Category.id) \
+            #     .filter(Post.authorid == User.id)
+
+            # post_id_list = db.session.query(t_post_tag.postid).filter(t_post_tag.tagid == tag.id)
+            # post = Post.query.filter_by(tag=tag).first()
+            posts = Post.tag.all()
+        except:
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+        if posts is None:
+            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(posts))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(data)
