@@ -7,7 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):  # 所有配置类的父类，通用的配置写在这里
-    # DEBUG = False  # debug模式的设置,开发环境用，自动重启项目，日志级别低，报错在前端显示具体代码
+    DEBUG = True  # debug模式的设置,开发环境用，自动重启项目，日志级别低，报错在前端显示具体代码
     TESTING = False  # 测试模式的设置，无限接近线上环境，不会重启项目，日志级别较高，不会在前端显示错误代码
     WTF_CSRF_ENABLED = False  # 激活跨站点请求伪造保护
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'

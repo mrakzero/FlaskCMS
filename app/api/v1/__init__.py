@@ -14,10 +14,6 @@ from app.api.v1.user import UserListResource, UserRegisterResource, UserLoginRes
 api = Api()  # restful api
 
 
-# def init_app(app):
-#     api.init_app(app)
-
-
 def registerResources():
     # User Resource
     api.add_resource(UserRegisterResource, '/register', endpoint='ep_user_register')
@@ -36,7 +32,7 @@ def registerResources():
     api.add_resource(PostTitleResource, '/post/title/<string:title>', endpoint='ep_get_post_by_title')
     api.add_resource(PostAuthorResource, '/post/author/<string:authror>', endpoint='get_post_by_author')
     api.add_resource(PostCategoryResource, '/posts/category/<string:category>', endpoint='get_posts_by_category')
-    api.add_resource(PostTagResource, '/posts/tag/<String:tag>', endpoint='get_posts_by_tag')
+    api.add_resource(PostTagResource, '/posts/tag/<string:tag>', endpoint='get_posts_by_tag')
 
     # Page Resource
     api.add_resource(PageListResource, '/pages', endpoint='ep_pages')

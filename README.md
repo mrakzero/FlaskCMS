@@ -12,19 +12,11 @@ FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便�
 
 ### 创建数据库
 
-```python
-    set
-FLASK_APP = manage.py
-　  flsk
-db
-init
-　  flask
-db
-migrate
-　  flask
-db
-upgrade
-
+```bat
+set FLASK_APP=manage.py
+flsk db init
+flask db migrate
+flask db upgrade
 ```
 
 ## 使用说明
@@ -33,18 +25,18 @@ upgrade
 
 按照__init__.py文件中的描述，打开注册蓝图的注释，然后将flask-restful相关的内容注释，然后执行运行命令：
 
-```python 
-    set FLASK_APP=manage.py
-    flask run
+```bat 
+set FLASK_APP=manage.py
+flask run
 ```
 
 ### 前后端分离模式
 
 默认使用前后端分离模式，启动程序命令如下：
 
-```python 
-    set FLASK_APP=manage.py
-    flask run
+```bat 
+set FLASK_APP=manage.py
+flask run
 ```
 
 ## 参与贡献
