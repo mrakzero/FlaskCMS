@@ -2,7 +2,6 @@
 import datetime
 import enum
 
-
 from flask_login import current_user
 
 from app import db
@@ -33,10 +32,10 @@ class Post(db.Model):
     categoryid = db.Column(db.Integer, db.ForeignKey('t_category.id'), comment='分类ID')
     # category = db.relationship('Category', backref=db.backref('t_post', lazy=True))
     image = db.Column(db.String(500), nullable=True, comment='图片')
-    # publishtime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
-    # updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), comment='修改时间')
-    publishtime = db.Column(db.DateTime, default=datetime.datetime.now, comment='创建时间')
-    updatetime = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, comment='修改时间')
+    # if mysql, you need to change server_default to default
+    publishtime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
+    updatetime = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(),
+                           comment='修改时间')
     counter = db.Column(db.Integer, comment='阅读计数')
     tag = db.relationship('Tag', secondary=t_post_tag, backref=db.backref('t_post'), lazy='dynamic')
     status = db.Column(db.Boolean, default=True, comment='文章状态')
@@ -65,34 +64,6 @@ class Post(db.Model):
             excerpt = self.content[:500].strip()
             self.excerpt = excerpt
             db.session.commit()
-
-    @staticmethod
-    def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-
-    @staticmethod
-    def get_by_title(cls, title):
-        return cls.query.fiflter_by(title=title).first()
-
-    @staticmethod
-    def get_by_category(cls, categoryid):
-        return cls.query.filter_by(categoryid=categoryid)
-
-    @staticmethod
-    def get_by_authror(cls, authroid):
-        return cls.query.filter_by(authorid=authroid)
-
-    @staticmethod
-    def get_by_tag(cls, tagid):
-        return cls.query.filter_by(tagid=tagid)
-
-    @staticmethod
-    def page(page_num, per_page):
-        return Post.query.paginate(page_num, per_page, False)
-
-    @staticmethod
-    def get_by_category(category):
-        return Post.query.filter_by(category=category)
 
     def verify_post_author(self, user_id):
         if user_id == self.author_id:

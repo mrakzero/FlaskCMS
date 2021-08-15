@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-# File: setting.py
+# File: site.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:26
 from flask import jsonify, current_app, flash
-from flask_restful import Resource, fields, reqparse
+from flask_restful import Resource, fields, reqparse, marshal_with
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.site import Site
-from app.utils import serialize
 
 PARSER_ARGS_STATUS = True
 
@@ -34,6 +33,7 @@ parser.add_argument('description', type=str, required=False, trim=True, location
 
 
 class SiteResource(Resource):
+    @marshal_with(resource_fields, envelope='resource')
     def get(self):
         try:
             site_info = Site.query.all()

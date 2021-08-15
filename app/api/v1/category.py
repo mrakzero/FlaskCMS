@@ -11,7 +11,7 @@ from flask_restful import fields, marshal_with, reqparse, Resource
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.category import Category
-from app.utils import serialize
+from app.utils import query_to_dict
 
 PARSER_ARGS_STATUS = True
 
@@ -83,7 +83,7 @@ class CategoryResource(Resource):
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if category is None:
             return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(category))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(category))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 

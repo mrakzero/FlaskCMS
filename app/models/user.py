@@ -62,8 +62,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(256), nullable=False, comment='密码')
     email = db.Column(db.String(128), nullable=False, unique=True, comment='邮件')
     roleid = db.Column(db.Integer, db.ForeignKey('t_role.id'), comment='角色ID')
-    # registertime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
-    registertime = db.Column(db.DateTime, default=datetime.datetime.now, comment='创建时间')
+    registertime = db.Column(db.DateTime, server_default=db.func.now(), comment='创建时间')
     status = db.Column(db.Boolean, server_default=text('1'), comment='用户状态')
     post = db.relationship('Post', backref=db.backref('t_user'), lazy='dynamic')
 

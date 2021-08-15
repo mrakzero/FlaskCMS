@@ -11,7 +11,7 @@ from app.forms.page import PageForm
 from app.models.category import Category
 from app.models.page import Page
 from app.models.user import User
-from app.utils import serialize
+from app.utils import query_to_dict
 
 PARSER_ARGS_STATUS = True
 
@@ -48,41 +48,37 @@ class PageListResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
     def get(self):
         try:
-            pages = Page.query.join(User, (User.id == Page.authorid)) \
-                .with_entitles(Page.id, Page.title, Page.slug, User.username, Page.publishtime) \
+            pages = db.session.query(Page.id, Page.title, Page.slug, User.username, Page.publishtime) \
+                .filter(Page.authorid == User.id) \
                 .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if pages is None:
             return jsonify(code=ResponseCode.PAGE_NOT_EXIST, message=ResponseMessage.PAGE_NOT_EXIST)
-        current_app.logger.debug("pages: %s", pages)
-
-        return pages
+        current_app.logger.debug("posts: %s", pages)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(pages))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(data)
 
 
 class PageResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
     def get(self, id):
         try:
-            # Page = Page.query.filter_by(id=id).first()
-            # Page = db.session.query(Page.id, Page.title, Page.slug, User.username, Category.name, Page.excerpt,
-            #                         Page.publishtime) \
-            #     .filter(Page.id==id) \
-            #     .filter(Page.categoryid == Category.id) \
-            #     .filter(Page.authorid == User.id)
-            page = Page.query.join(User, (User.id == Page.authorid)) \
+            page = db.session.query(Page.id, Page.title, Page.slug, User.username, Page.excerpt,
+                                    Page.updatetime) \
                 .filter(Page.id == id) \
-                .all()
-
+                .filter(Page.authorid == User.id) \
+                .first()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
 
         if Page is None:
             return jsonify(code=ResponseCode.PAGE_NOT_EXIST, message=ResponseMessage.PAGE_NOT_EXIST)
-        current_app.logger.debug("Page: %s", page)
-        # data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(Page))
-        # current_app.logger.debug("data: %s", data)
-        return page
+        current_app.logger.debug("page: %s", page)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(page))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(page)
 
     def post(self):
         current_app.logger.debug("Enter post function")
@@ -101,7 +97,7 @@ class PageResource(Resource):
         db.session.commit()
 
         flash('page created.', 'success')
-        data = dict(code=ResponseCode.CREATE_Page_SUCCESS, message=ResponseMessage.CREATE_Page_SUCCESS)
+        data = dict(code=ResponseCode.CREATE_PAGE_SUCCESS, message=ResponseMessage.CREATE_PAGE_SUCCESS)
         return jsonify(data)
 
     def put(self, page_id):
@@ -147,12 +143,17 @@ class PageTitleResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
     def get(self, title):
         try:
-            page = Page.query.filter_by(title=title).first()
+            pages = db.session.query(Page.id, Page.title, Page.slug, User.username, Page.excerpt,
+                                     Page.updatetime) \
+                .filter(Page.title == title) \
+                .filter(Page.authorid == User.id) \
+                .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if page is None:
+        if pages is None:
             return jsonify(code=ResponseCode.PAGE_NOT_EXIST, message=ResponseMessage.PAGE_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(page))
+        current_app.logger.debug("posts: %s", pages)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(pages))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
@@ -162,12 +163,16 @@ class PageAuthorResource(Resource):
     @marshal_with(resource_fields, envelope='resource')
     def get(self, author):
         try:
-            author = User.query.filter_by(username=author)
-            page = Page.query.filter_by(authorid=author.id).first()
+            author = User.query.filter_by(username=author).first()
+            pages = db.session.query(Page.id, Page.title, Page.slug, User.username, Page.excerpt,
+                                     Page.updatetime) \
+                .filter(Page.authorid == author.id) \
+                .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if page is None:
+        if pages is None:
             return jsonify(code=ResponseCode.PAGE_NOT_EXIST, message=ResponseMessage.PAGE_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(page))
+        current_app.logger.debug("posts: %s", pages)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(pages))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)

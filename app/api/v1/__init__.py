@@ -20,7 +20,7 @@ def registerResources():
     api.add_resource(UserLoginResource, '/login', endpoint='ep_user_login')
     api.add_resource(UserlogoutResource, '/logout', endpoint='ep_user_logout')
     api.add_resource(UserListResource, '/users', endpoint='ep_users')
-    api.add_resource(UserResource, '/user', '/user/<int:id>', endpoint='ep_user')
+    api.add_resource(UserResource, '/user', '/user/<string:username>', endpoint='ep_user')
 
     # Category Resouce
     api.add_resource(CategoryListResource, '/categories', endpoint='ep_categories')
@@ -28,11 +28,11 @@ def registerResources():
 
     # Post Resource
     api.add_resource(PostListResource, '/posts', endpoint='ep_posts')
-    api.add_resource(PostResource, '/post', '/post/<int:id>', endpoint='ep_post')
-    api.add_resource(PostTitleResource, '/post/title/<string:title>', endpoint='ep_get_post_by_title')
-    api.add_resource(PostAuthorResource, '/post/author/<string:authror>', endpoint='get_post_by_author')
+    api.add_resource(PostTitleResource, '/posts/title/<string:title>', endpoint='ep_get_post_by_title')
+    api.add_resource(PostAuthorResource, '/posts/author/<string:author>', endpoint='get_post_by_author')
     api.add_resource(PostCategoryResource, '/posts/category/<string:category>', endpoint='get_posts_by_category')
     api.add_resource(PostTagResource, '/posts/tag/<string:tag>', endpoint='get_posts_by_tag')
+    api.add_resource(PostResource, '/post', '/post/<int:id>', endpoint='ep_post')
 
     # Page Resource
     api.add_resource(PageListResource, '/pages', endpoint='ep_pages')

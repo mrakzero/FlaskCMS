@@ -6,11 +6,15 @@ FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便�
 
 ## 软件架构
 
-软件架构说明
+### 软件架构说明
+
+### 遗留问题
+
+1、联合查询post，post author，category查询异常 2、鉴权问题
 
 ## 安装教程
 
-### 创建数据库
+### 创建数据库表结构
 
 ```bat
 set FLASK_APP=manage.py
@@ -18,6 +22,10 @@ flsk db init
 flask db migrate
 flask db upgrade
 ```
+
+### 添加默认数据
+
+在PostgreSQL中执行init_db.sql的语句，创建默认数据
 
 ## 使用说明
 

@@ -9,8 +9,8 @@ from werkzeug.security import generate_password_hash
 
 from app import db, login_manager
 from app.errors.errorcode import ResponseCode, ResponseMessage
-from app.models.user import User
-from app.utils import serialize
+from app.models.user import User, Role
+from app.utils import query_to_dict
 
 PARSER_ARGS_STATUS = True
 
@@ -81,27 +81,33 @@ class UserlogoutResource(Resource):
 class UserListResource(Resource):
     def get(self):
         try:
-            users = User.query.all()
+            users = db.session.query(User.id, User.username, User.nickname, Role.code, User.email, User.registertime,
+                                     User.status) \
+                .filter(User.roleid == Role.id) \
+                .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if users is None:
             return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
 
-        # data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(users))
-        # current_app.logger.debug("data: %s", data)
-        # return jsonify(data)
-        return users
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(users))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(data)
 
 
 class UserResource(Resource):
     def get(self, username):
         try:
-            user = User.query.filter_by(username=username).first()
+            user = db.session.query(User.id, User.username, User.nickname, Role.code, User.email, User.registertime,
+                                    User.status) \
+                .filter(User.username == username) \
+                .filter(User.roleid == Role.id) \
+                .first()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if user is None:
             return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(user))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(user))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 

@@ -3,17 +3,16 @@
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 
-
-from flask import flash, redirect, url_for, jsonify, current_app
+from flask import flash, jsonify, current_app
 from flask_restful import fields, Resource, reqparse, marshal_with
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.category import Category
-from app.models.post import Post, t_post_tag
+from app.models.post import Post
 from app.models.tag import Tag
 from app.models.user import User
-from app.utils import serialize
+from app.utils import query_to_dict
 
 PARSER_ARGS_STATUS = True
 
@@ -68,53 +67,42 @@ parser.add_argument('status', type=bool, required=True, trim=True, location=[u'j
 
 
 class PostListResource(Resource):
-    # @marshal_with(resource_fields, envelope='resource')
     def get(self):
         current_app.logger.debug("Enter get function!")
         try:
-            # posts = Post.query.filter().all()
-            # posts = Post.query.join(Category, (Category.id == Post.categoryid)) \
-            #     .join(User, (User.id == Post.authorid)) \
-            #     .with_entitles(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
-            #                    Post.publishtime) \
-            #     .all()
-            posts = Post.query.join(Category, (Category.id == Post.categoryid)) \
-                .join(User, (User.id == Post.authorid)) \
+            posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                     Post.updatetime, User.username) \
+                .filter(Post.categoryid == Category.id) \
+                .filter(Post.authorid == User.id) \
                 .all()
+            # .order_by('Post.publishtime')  # 降序 ‘-Post.publishtime’
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-
-        post_dict = [lambda: post for post in posts]
-        current_app.logger.debug("posts: %s", serialize(post_dict))
-
-        return post_dict
+        current_app.logger.debug("posts: %s", posts)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(data)
 
 
 class PostResource(Resource):
-    @marshal_with(resource_fields, envelope='resource')
     def get(self, id):
         try:
-            # post = Post.query.filter_by(id=id).first()
-            # post = db.session.query(Post.id, Post.title, Post.slug, User.username, Category.name, Post.excerpt,
-            #                         Post.publishtime) \
-            #     .filter(Post.id==id) \
-            #     .filter(Post.categoryid == Category.id) \
-            #     .filter(Post.authorid == User.id)
-            post = Post.query.join(Category, (Category.id == Post.categoryid)) \
-                .join(User, (User.id == Post.authorid)) \
+            post = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                    Post.updatetime, User.username, Post.content) \
                 .filter(Post.id == id) \
-                .all()
-            current_app.logger.debug("post: %s", post)
+                .filter(Post.categoryid == Category.id) \
+                .filter(Post.authorid == User.id) \
+                .first()
+
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if post is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        current_app.logger.debug("post: %s", post)
-        # data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
-        # current_app.logger.debug("data: %s", data)
-        return post
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(post))
+        current_app.logger.debug("data: %s", data)
+        return jsonify(data)
 
     def post(self):
         current_app.logger.debug("Enter post function")
@@ -177,53 +165,68 @@ class PostResource(Resource):
 
 # get post by post name
 class PostTitleResource(Resource):
-    @marshal_with(resource_fields, envelope='resource')
     def get(self, title):
         try:
-            post = Post.query.filter_by(title=title).first()
+            posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                     Post.updatetime, User.username, Post.content) \
+                .filter(Post.title == title) \
+                .filter(Post.categoryid == Category.id) \
+                .filter(Post.authorid == User.id) \
+                .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if post is None:
+        if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
 
-# get posts by author id
+# get posts by author
 class PostAuthorResource(Resource):
-    @marshal_with(resource_fields, envelope='resource')
-    def get(self, authorid):
+    def get(self, author):
         try:
-            post = Post.query.filter_by(authorid=authorid).first()
+            user = User.query.filter(User.username == author).first()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if post is None:
+        if user is None:
+            return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
+        try:
+            posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                     Post.updatetime, User.username, Post.content) \
+                .filter(Post.authorid == user.id) \
+                .filter(Post.categoryid == Category.id) \
+                .all()
+        except:
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+        if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(post))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
 
 # get posts by category
 class PostCategoryResource(Resource):
-    @marshal_with(resource_fields, envelope='resource')
     def get(self, category_name):
         try:
             category = Category.query.filter_by(name=category_name).first()
-            posts = Post.query.filter_by(categoryid=category.id).all()
+            posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                     Post.updatetime, User.username, Post.content) \
+                .filter(Post.categoryid == category.id) \
+                .filter(Post.authorid == User.id) \
+                .all()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(posts))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
 
 # get posts by tag
 class PostTagResource(Resource):
-    @marshal_with(resource_fields, envelope='resource')
     def get(self, tag_name):
         # todo
         try:
@@ -242,6 +245,6 @@ class PostTagResource(Resource):
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(posts))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)

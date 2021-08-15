@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: setting.py
+# File: site.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:26
 from flask import Blueprint, render_template
