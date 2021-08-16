@@ -10,7 +10,6 @@ FlaskCMS是基于一款基于Flask的CMS系统，基于该系统，可以方便�
 
 ### 遗留问题
 
-1、联合查询post，post author，category查询异常 2、鉴权问题
 
 ## 安装教程
 
