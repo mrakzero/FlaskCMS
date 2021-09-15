@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: post.py
+# File: post_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 22:06
 from flask_ckeditor import CKEditorField

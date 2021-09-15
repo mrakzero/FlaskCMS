@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
-# File: post.py
+# File: post_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 
-from flask import flash, redirect, url_for, render_template, make_response
+from flask import flash, redirect, url_for, render_template, make_response, jsonify, current_app
 
 from app import db
-from app.forms.post import PostForm
+from app.errors.errorcode import ResponseCode, ResponseMessage
+from app.forms.post_form import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
+from app.utils import query_to_dict
 from app.views.admin import bp_admin
 
 
-@bp_admin.route('/post', methods=['GET'])
-def post_query():
-    posts = Post.query.all()
-    return render_template('admin/post/post.html', posts=posts)
-
-
-@bp_admin.route('/post/new', methods=['GET', 'POST'])
+@bp_admin.route('/post', methods=['GET', 'POST'])
 def create_post():
     post_form = PostForm()
     if post_form.validate_on_submit():
         post = get_post_info(post_form)
+
         db.session.add(post)
         db.session.commit()
         flash('Post created.', 'success')
@@ -30,7 +27,86 @@ def create_post():
     return render_template('admin/post/post-new.html', post_form=post_form)
 
 
-@bp_admin.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@bp_admin.route('/posts', methods=['GET'])
+def get_posts():
+    try:
+        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                 Post.updatetime, User.username) \
+            .filter(Post.categoryid == Category.id) \
+            .filter(Post.authorid == User.id) \
+            .all()
+        # .order_by('Post.publishtime')  # 降序 ‘-Post.publishtime’
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if posts is None:
+        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+    current_app.logger.debug("posts: %s", posts)
+    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
+    current_app.logger.debug("data: %s", data)
+
+    return render_template('admin/post/post.html', posts=data)
+
+
+@bp_admin.route('/post/<int:post_id>', methods=['GET'])
+def get_post_by_id(post_id):
+    try:
+        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                 Post.updatetime, User.username, Post.content) \
+            .filter(Post.title == post_id) \
+            .filter(Post.categoryid == Category.id) \
+            .filter(Post.authorid == User.id) \
+            .all()
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if posts is None:
+        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
+    current_app.logger.debug("data: %s", data)
+    return jsonify(data)
+
+
+@bp_admin.route('/post/<string:post_title>', methods=['GET'])
+def get_post_by_title(post_title):
+    try:
+        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                 Post.updatetime, User.username, Post.content) \
+            .filter(Post.title == post_title) \
+            .filter(Post.categoryid == Category.id) \
+            .filter(Post.authorid == User.id) \
+            .all()
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if posts is None:
+        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
+    current_app.logger.debug("data: %s", data)
+    return jsonify(data)
+
+
+@bp_admin.route('/post/<string:post_author>', methods=['GET'])
+def get_post_by_author(post_author):
+    try:
+        user = User.query.filter(User.username == post_author).first()
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if user is None:
+        return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
+    try:
+        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
+                                 Post.updatetime, User.username, Post.content) \
+            .filter(Post.authorid == user.id) \
+            .filter(Post.categoryid == Category.id) \
+            .all()
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if posts is None:
+        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
+    current_app.logger.debug("data: %s", data)
+    return jsonify(data)
+
+
+@bp_admin.route('/post/<int:post_id>', methods=['PUT'])
 def update_post(post_id):
     post_form = PostForm()
     post = Post.query.get_or_404(post_id)
@@ -49,7 +125,7 @@ def update_post(post_id):
     return render_template('admin/post/post-edit.html', post_form=post_form)
 
 
-@bp_admin.route('/post/<int:post_id>/delete', methods=['POST'])
+@bp_admin.route('/post/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)

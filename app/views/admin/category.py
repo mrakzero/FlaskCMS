@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Version: 1.0.0
-# File: category.py
+# File: category_resource.py
 # Author:Zhang Zhijun
 # Time: 2021-03-13
 
 
 from flask import Blueprint, render_template, jsonify
 
-from app.forms.category import CategoryForm
+from app.forms.category_form import CategoryForm
 from app.models.category import Category
 from app.views.admin import bp_admin
 

@@ -3,7 +3,7 @@
 # version: 1.0.0
 # author:Zhang Zhijun
 # time: 2021-03-13
-# file: category.py
+# file: category_resource.py
 # function:
 # modify:
 from flask_wtf import FlaskForm

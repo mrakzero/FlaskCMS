@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: user.py
+# File: user_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 22:43
 from flask_wtf import FlaskForm

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: user.py
+# File: user_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:26
 from flask import Blueprint, flash, redirect, url_for, render_template
@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash
 
 from app import db, login_manager
-from app.forms.user import UserForm, LoginForm, RegisterForm
+from app.forms.user_form import UserForm, LoginForm, RegisterForm
 from app.models.user import User
 from app.views.admin import bp_admin
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File: site.py
+# File: site_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:26
 from flask import jsonify, current_app, flash

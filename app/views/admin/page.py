@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# File: page.py
+# File: page_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:22
 from flask import render_template, redirect, flash, url_for
 
 from app import db
-from app.forms.page import PageForm
+from app.forms.page_form import PageForm
 from app.models.category import Category
 from app.models.page import Page
 from app.models.user import User
