@@ -9,12 +9,10 @@ from werkzeug.security import generate_password_hash
 from app import db, login_manager
 from app.forms.user import UserForm, LoginForm, RegisterForm
 from app.models.user import User
-
-bp_admin_user = Blueprint('admin_user', __name__, url_prefix='/admin', template_folder='../templates/admin',
-                          static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_user.route('/register', methods=['GET', 'POST'])
+@bp_admin.route('/register', methods=['GET', 'POST'])
 def register():
     register_form = RegisterForm()
     if register_form.validate_on_submit():
@@ -33,7 +31,7 @@ def register():
     return render_template('admin/register.html', register_form=register_form)
 
 
-@bp_admin_user.route('/login', methods=['GET', 'POST'])
+@bp_admin.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
@@ -48,7 +46,7 @@ def login():
     return render_template('admin/login.html', login_form=login_form)
 
 
-@bp_admin_user.route('/logout', methods=['GET', 'POST'])
+@bp_admin.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()  # 登出用户

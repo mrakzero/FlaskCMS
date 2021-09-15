@@ -2,25 +2,23 @@
 # File: page.py
 # Author: Zhangzhijun
 # Date: 2021/2/13 17:22
-from flask import Blueprint, render_template, redirect, flash, url_for
+from flask import render_template, redirect, flash, url_for
 
 from app import db
 from app.forms.page import PageForm
 from app.models.category import Category
 from app.models.page import Page
 from app.models.user import User
-
-bp_admin_page = Blueprint('admin_page', __name__, url_prefix='/admin', template_folder='../templates/admin',
-                          static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_page.route('/age', methods=['GET'])
+@bp_admin.route('/age', methods=['GET'])
 def page_query():
     pages = Page.query.all()
     return render_template('admin/Page/Page.html', pages=pages)
 
 
-@bp_admin_page.route('/Page/new', methods=['GET', 'Page'])
+@bp_admin.route('/Page/new', methods=['GET', 'Page'])
 def create_Page():
     page_form = PageForm()
     if page_form.validate_on_submit():
@@ -32,7 +30,7 @@ def create_Page():
     return render_template('admin/Page/Page-new.html', page_form=page_form)
 
 
-@bp_admin_page.route('/Page/<int:page_id>/update', methods=['GET', 'Page'])
+@bp_admin.route('/Page/<int:page_id>/update', methods=['GET', 'Page'])
 def update_Page(page_id):
     page_form = PageForm()
     page = Page.query.get_or_404(page_id)
@@ -51,7 +49,7 @@ def update_Page(page_id):
     return render_template('admin/Page/Page-edit.html', page_form=page_form)
 
 
-@bp_admin_page.route('/Page/<int:page_id>/delete', methods=['Page'])
+@bp_admin.route('/Page/<int:page_id>/delete', methods=['Page'])
 def delete_Page(page_id):
     page = Page.query.get_or_404(page_id)
     db.session.delete(Page)

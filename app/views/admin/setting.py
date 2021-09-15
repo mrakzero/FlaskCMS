@@ -5,12 +5,10 @@
 from flask import Blueprint, render_template
 
 from app.models.site import Site
-
-bp_admin_setting = Blueprint('admin_setting', __name__, url_prefix='/admin', template_folder='../templates/admin',
-                             static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_setting.route('/setting', methods=['GET'])
+@bp_admin.route('/setting', methods=['GET'])
 def setting():
     setting = Site.query.all()
     return render_template('admin/site/site.html', posts=posts)

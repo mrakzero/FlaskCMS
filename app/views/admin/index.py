@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template
 
-bp_admin_index = Blueprint('admin_index', __name__, template_folder='../templates/admin/',
-                           static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_index.route('/')
+@bp_admin.route('/')
 def admin_index():
     return render_template('admin/index.html')

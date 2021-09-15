@@ -2,28 +2,23 @@
 # File: post.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
-import os
-from datetime import datetime
-from random import random
 
-from flask import Blueprint, request, flash, redirect, url_for, render_template, make_response
+from flask import flash, redirect, url_for, render_template, make_response
 
 from app import db
 from app.forms.post import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
-
-bp_admin_post = Blueprint('admin_post', __name__, url_prefix='/admin', template_folder='../templates/admin',
-                          static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_post.route('/post', methods=['GET'])
+@bp_admin.route('/post', methods=['GET'])
 def post_query():
     posts = Post.query.all()
     return render_template('admin/post/post.html', posts=posts)
 
 
-@bp_admin_post.route('/post/new', methods=['GET', 'POST'])
+@bp_admin.route('/post/new', methods=['GET', 'POST'])
 def create_post():
     post_form = PostForm()
     if post_form.validate_on_submit():
@@ -35,7 +30,7 @@ def create_post():
     return render_template('admin/post/post-new.html', post_form=post_form)
 
 
-@bp_admin_post.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@bp_admin.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
 def update_post(post_id):
     post_form = PostForm()
     post = Post.query.get_or_404(post_id)
@@ -54,7 +49,7 @@ def update_post(post_id):
     return render_template('admin/post/post-edit.html', post_form=post_form)
 
 
-@bp_admin_post.route('/post/<int:post_id>/delete', methods=['POST'])
+@bp_admin.route('/post/<int:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
@@ -92,7 +87,7 @@ def get_post_info(form):
 #     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
 #
 #
-# @bp_admin_post.route('/upload/', methods=['POST'])
+# @bp_admin.route('/upload/', methods=['POST'])
 # def ckupload():
 #     """CKEditor file upload"""
 #     error = ''

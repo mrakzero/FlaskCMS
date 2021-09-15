@@ -10,19 +10,17 @@ from flask import Blueprint, render_template, jsonify
 
 from app.forms.category import CategoryForm
 from app.models.category import Category
-
-bp_admin_category = Blueprint('admin_category', __name__, url_prefix='/admin', template_folder='../template',
-                              static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_category.route('/category', methods=['GET'])
+@bp_admin.route('/category', methods=['GET'])
 def category():
     category_form = CategoryForm()
     categories = Category.query.all()
     return render_template('admin/category/category.html', category_form=category_form, categories=categories)
 
 
-@bp_admin_category.route('/category/list', methods=['GET'])
+@bp_admin.route('/categories', methods=['GET'])
 def get_all_category():
     try:
         categories = Category.query.filter().all()
@@ -32,7 +30,7 @@ def get_all_category():
         return jsonify(code=12, message='result is none.')
 
 
-@bp_admin_category.route('/category/<int:category_id>', methods=['GET'])
+@bp_admin.route('/category/<int:category_id>', methods=['GET'])
 def get_category_by_id(category_id):
     try:
         category = Category.query.filter(id=category_id).first()
@@ -44,7 +42,7 @@ def get_category_by_id(category_id):
     return jsonify(code=0, message='query sueess.')
 
 
-@bp_admin_category.route('/category/create', methods=['GET,POST'])
+@bp_admin.route('/category/create', methods=['GET,POST'])
 def create_category():
     try:
         categories = Category.query.filter().all()
@@ -54,7 +52,7 @@ def create_category():
         return jsonify(code=12, message='result is none.')
 
 
-@bp_admin_category.route('/category/<int:category_id>/update', methods=['GET', 'PUT'])
+@bp_admin.route('/category/<int:category_id>/update', methods=['GET', 'PUT'])
 def update_category(category_id):
     try:
         categories = Category.query.filter(id=category_id).first()
@@ -64,7 +62,7 @@ def update_category(category_id):
         return jsonify(code=12, message='result is none.')
 
 
-@bp_admin_category.route('/category/<int:category_id>/delete', methods=['Delete'])
+@bp_admin.route('/category/<int:category_id>/delete', methods=['Delete'])
 def delete_category(category_id):
     try:
         categories = Category.query.filter(id=category_id).first()

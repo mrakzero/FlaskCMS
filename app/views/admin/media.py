@@ -4,20 +4,19 @@
 # Date: 2021/2/15 11:34
 import os
 
-from flask import Blueprint, send_from_directory, request, url_for
+from flask import send_from_directory, request, url_for
 from flask_ckeditor import upload_fail, upload_success
 
-bp_admin_media = Blueprint('admin_media', __name__, url_prefix='/admin', template_folder='../templates/admin',
-                           static_folder='../static')
+from app.views.admin import bp_admin
 
 
-@bp_admin_media.route('/files/<path:filename>')
+@bp_admin.route('/media/files/<path:filename>')
 def uploaded_files(filename):
     path = '/the/uploaded/directory'
     return send_from_directory(path, filename)
 
 
-@bp_admin_media.route('/upload', methods=['POST'])
+@bp_admin.route('/media/upload', methods=['POST'])
 def upload():
     f = request.files.get('upload')
     # Add more validations here
