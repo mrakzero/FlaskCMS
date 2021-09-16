@@ -8,6 +8,7 @@ from flask_restful import Resource, fields, reqparse, marshal_with
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.site import Site
+from app.utils import query_to_dict
 
 
 class SiteResource():
@@ -19,7 +20,7 @@ class SiteResource():
         if site_info is None:
             return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
 
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=serialize(site_info))
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(site_info))
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 

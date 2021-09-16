@@ -12,52 +12,29 @@ from app.errors.errorcode import ResponseCode, ResponseMessage
 from app.models.user import User, Role
 from app.utils import query_to_dict
 
-PARSER_ARGS_STATUS = True
 
-resource_fields = {
-    'id': fields.String,
-    'username': fields.String,
-    'nickname': fields.String,
-    'email': fields.String
-}
+class UserResource():
+    def register(self, user):
 
-parser = reqparse.RequestParser()
-parser.add_argument('id', type=int, required=False, trim=True, location=[u'json', u'form', u'args', u'values'])
-parser.add_argument('username', type=str, required=False, trim=True, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请输入用户名')
-parser.add_argument('nickname', type=str, required=False, trim=True, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请输入昵称')
-parser.add_argument('password', type=int, trim=False, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请输入密码')
-parser.add_argument('email', type=str, required=False, trim=True, location=[u'json', u'form', u'args', u'values'],
-                    help=u'请输入邮箱号')
-
-
-class UserRegisterResource(Resource):
-    def post(self):
-        args = parser.parse_args(strict=PARSER_ARGS_STATUS)
-
-        if (User.query.filter_by(username=args.username() > 0)):
+        if (User.query.filter_by(username=user.username() > 0)):
             return jsonify(code=ResponseCode.USER_ALREADY_EXIST, message=ResponseMessage.USER_ALREADY_EXIST)
 
-        user = User(
-            username=args.username,
-            nickname=args.nickname,
-            password_hash=generate_password_hash(args.password),
-            email=args.email
+        u = User(
+            username=user.username,
+            nickname=user.nickname,
+            password_hash=generate_password_hash(user.password),
+            email=user.email
         )
-        db.session.add(user)
+        db.session.add(u)
         db.session.commit()
         flash('Post created.', 'success')
         data = dict(code=ResponseCode.CREATE_CATEGORY_SUCCESS, message=ResponseMessage.CREATE_CATEGORY_SUCCESS)
         return jsonify(data)
 
+    def login(self, user):
 
-class UserLoginResource(Resource):
-    def post(self):
-        args = parser.parse_args(strict=PARSER_ARGS_STATUS)
-        username = args.username,
-        password = args.password,
+        username = user.username,
+        password = user.password,
 
         user = User.query.first()
         # 验证用户名和密码是否一致
@@ -69,17 +46,13 @@ class UserLoginResource(Resource):
             data = dict(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
             return jsonify(data)
 
-
-class UserlogoutResource(Resource):
     @login_required
-    def get(self):
+    def logout(self):
         logout_user()  # 登出用户
         data = dict(code=ResponseCode.LOGOUT_SUCCESS, message=ResponseMessage.LOGOUT_SUCCESS)
         return jsonify(data)
 
-
-class UserListResource(Resource):
-    def get(self):
+    def get_users(self):
         try:
             users = db.session.query(User.id, User.username, User.nickname, Role.code, User.email, User.registertime,
                                      User.status) \
@@ -94,9 +67,7 @@ class UserListResource(Resource):
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
-
-class UserResource(Resource):
-    def get(self, username):
+    def get_user_by_name(self, username):
         try:
             user = db.session.query(User.id, User.username, User.nickname, Role.code, User.email, User.registertime,
                                     User.status) \
@@ -112,26 +83,25 @@ class UserResource(Resource):
         return jsonify(data)
 
     @login_required
-    def put(self, username):
-        args = parser.parse_args(strict=PARSER_ARGS_STATUS)
+    def update_user(self, user):
 
         try:
-            user = User.query.filter_by(username=username).first()
+            u = User.query.filter_by(username=user.username).first()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if user is None:
+        if u is None:
             return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
 
-        user.username = args.username,
-        user.nickname = args.nickname,
-        user.email = args.email
+        u.username = user.username,
+        u.nickname = user.nickname,
+        u.email = user.email
 
         db.session.commit()
         data = dict(code=ResponseCode.UPDATE_USER_SUCCESS, message=ResponseMessage.UPDATE_USER_SUCCESS)
         return jsonify(data)
 
     @login_required
-    def delete(self, username):
+    def delete_user(self, username):
         try:
             user = User.query.filter_by(username=username).first()
         except:

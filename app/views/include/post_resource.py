@@ -4,7 +4,6 @@
 # Date: 2021/2/12 21:22
 
 from flask import flash, jsonify, current_app
-from flask_restful import fields, Resource, reqparse, marshal_with
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
@@ -15,7 +14,7 @@ from app.models.user import User
 from app.utils import query_to_dict
 
 
-class PostResource(Resource):
+class PostResource():
     def get_posts(self):
         current_app.logger.debug("Enter get function!")
         try:
