@@ -15,7 +15,7 @@ from app.utils import query_to_dict
 
 
 class PostResource():
-    def get_posts(self):
+    def get_all_posts(self):
         current_app.logger.debug("Enter get function!")
         try:
             posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,

@@ -22,8 +22,7 @@ def create_post():
 
         db.session.add(post)
         db.session.commit()
-        flash('Post created.', 'success')
-        return redirect(url_for('admin.post'))
+        return redirect(url_for('bp_admin.get_posts'))
     return render_template('admin/post/post-new.html', post_form=post_form)
 
 

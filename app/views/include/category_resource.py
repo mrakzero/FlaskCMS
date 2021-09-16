@@ -68,12 +68,7 @@ class CategoryResource():
                 Category.query.filter_by(name=category.name).count() > 0):
             return jsonify(code=ResponseCode.CATEGORY_ALREADY_EXIST, message=ResponseMessage.CATEGORY_ALREADY_EXIST)
 
-        c = Category(
-            name=category.name,
-            slug=category.slug,
-            description=category.description
-        )
-        db.session.add(c)
+        db.session.add(category)
         db.session.commit()
 
         flash('Post created.', 'success')
@@ -86,15 +81,10 @@ class CategoryResource():
             c = Category.query.filter_by(id=category.id).first()
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if category is None:
+        if c is None:
             return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
 
-        c.name = category.name
-        c.slug = category.slug
-        c.id = category.parentid
-        c.description = category.description
-
-        db.session.commit()
+        db.session.commit(category)
 
         flash('Post created.', 'success')
         date = dict(code=ResponseCode.UPDATE_CATEGORY_SUCCESS, message=ResponseMessage.UPDATE_CATEGORY_SUCCESS)

@@ -20,11 +20,12 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" href="../../static/images/favicon.ico">
     {% block style %}
-        <link rel="stylesheet" href="../../static/lib/layui/css/layui.css" media="all">
-        <!--[if lt IE 9]>
-        <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-        <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='/lib/layui/css/layui.css') }}">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
     {% endblock %}
 </head>
 <body class="layui-layout-body">
@@ -33,10 +34,8 @@
 </div>
 
 {% block script %}
-    {#    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../../static/lib/layui/layui.all.js" charset="utf-8"></script>
-
+<script src="{{ url_for('static',filename='/lib/layui/layui.all.js')}}"></script>
 
     <script>
         $(document).ready(function () {
