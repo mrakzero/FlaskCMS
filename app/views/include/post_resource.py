@@ -19,12 +19,16 @@ class PostResource():
     def query_posts():
         current_app.logger.debug("Enter get function!")
         try:
+            # sql = 'SELECT t_post.id AS post_id, t_post.title AS post_title, t_post.slug AS post_slug, t_category.name AS post_category, t_post.excerpt AS post_excerpt, t_post.updatetime AS post_updatetime, t_user.username AS post_author FROM t_post, t_category, t_user WHERE t_post.categoryid = t_category.id AND t_post.authorid = t_user.id ORDER BY t_post.publishtime DESC'
+            # posts = db.session.execute(sql)
+            # posts = list(posts)
             posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
                                      Post.updatetime, User.username) \
                 .filter(Post.categoryid == Category.id) \
                 .filter(Post.authorid == User.id) \
                 .all()
             # .order_by('Post.publishtime')  # 降序 ‘-Post.publishtime’
+
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:

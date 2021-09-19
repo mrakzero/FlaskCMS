@@ -32,8 +32,8 @@
                     <div class="layui-form-item layui-form-text">
                         <label class="layui-form-label">文章内容</label>
                         <div class="layui-input-block">
-                            {{ post_form.content(class="ckeditor layui-textarea",placeholder="请输入内容") }}
-                            {{ ckeditor.create(name='content') }}
+                          {{ post_form.content(class="layui-textarea",placeholder="请输入内容") }}
+
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -74,17 +74,4 @@
 {% block script %}
     {{ super() }}
         <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
-    {#    <script>#}
-    {#        // 用CKEditor替换<textarea id="content">#}
-    {#        CKEDITOR.replace('content',#}
-    {#            {#}
-    {#                config.filebrowserUploadUrl = '/media/file/'; //文件上传路径。若设置了，则上传按钮会出现在链接、图片、Flash对话窗口#}
-    {#                config.filebrowserImageUploadUrl = '/media/image/'; // 图片上传路径。若不设置，则使用filebrowserUploadUrl值#}
-    {#                config.filebrowserFlashUploadUrl = '/media/flash/'; // Flash上传路径。若不设置，则使用filebrowserUploadUrl值。#}
-    {##}
-    {#            });#}
-    {#    </script>#}
 {% endblock %}
-
-{{ ckeditor.load(custom_url=url_for('static', filename='ckeditor/ckeditor.js')) }}
-{{ ckeditor.config(name='content') }}
