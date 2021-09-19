@@ -72,6 +72,7 @@ class ResponseCode(object):
 
     CATEGORY_NOT_EXIST = 40003000
     CATEGORY_ALREADY_EXIST = 40003001
+    CATEGORY_ASSOCIATE_WITH_POST = 40003002
 
     POST_NOT_EXIST = 40004000
     POST_ALREADY_EXIST = 40004001
@@ -134,6 +135,7 @@ class ResponseMessage(object):
 
     CATEGORY_NOT_EXIST = u"分类不存在"
     CATEGORY_ALREADY_EXIST = u"分类已存在"
+    CATEGORY_ASSOCIATE_WITH_POST = u"分类下已关联文章"
 
     POST_NOT_EXIST = u"文章不存在"
     POST_ALREADY_EXIST = u"文章已存在"

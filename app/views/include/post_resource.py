@@ -3,7 +3,7 @@
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 
-from flask import flash, jsonify, current_app
+from flask import jsonify, current_app
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
@@ -15,7 +15,8 @@ from app.utils import query_to_dict
 
 
 class PostResource():
-    def get_all_posts(self):
+    @staticmethod
+    def query_posts():
         current_app.logger.debug("Enter get function!")
         try:
             posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
@@ -34,7 +35,8 @@ class PostResource():
         return jsonify(data)
 
     # get post by post name
-    def get_post_by_title(self, title):
+    @staticmethod
+    def query_post_by_title(title):
         try:
             posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
                                      Post.updatetime, User.username, Post.content) \
@@ -51,7 +53,8 @@ class PostResource():
         return jsonify(data)
 
     # get posts by author
-    def get_post_by_author(self, author):
+    @staticmethod
+    def query_post_by_author(author):
         try:
             user = User.query.filter(User.username == author).first()
         except:
@@ -73,7 +76,8 @@ class PostResource():
         return jsonify(data)
 
     # get posts by category
-    def get_posts_by_category(self, category_name):
+    @staticmethod
+    def query_posts_by_category(category_name):
         try:
             category = Category.query.filter_by(name=category_name).first()
             posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
@@ -90,7 +94,8 @@ class PostResource():
         return jsonify(data)
 
     # get posts by tag
-    def get_posts_by_tag(self, tag_name):
+    @staticmethod
+    def query_posts_by_tag(tag_name):
         # todo
         try:
             # 多对多关系中获取对象,只能用get(id)方法,不能通过filter或者filter_by来获取
@@ -112,7 +117,8 @@ class PostResource():
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
-    def get_post_by_id(self, post_id):
+    @staticmethod
+    def query_post_by_id(post_id):
         try:
             post = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
                                     Post.updatetime, User.username, Post.content) \
@@ -127,43 +133,4 @@ class PostResource():
             return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(post))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
-
-    def create_post(self, post):
-        current_app.logger.debug("Enter post function")
-
-        current_app.logger.debug("post: %s", post)
-        db.session.add(post)
-        db.session.commit()
-
-        flash('Post created.', 'success')
-        data = dict(code=ResponseCode.CREATE_POST_SUCCESS, message=ResponseMessage.CREATE_POST_SUCCESS)
-        return jsonify(data)
-
-    def update_post(self, post):
-        current_app.logger.debug("Enter put function")
-
-        try:
-            post = Post.query.filter_by(id=post.id).first()
-        except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if post is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-
-        db.session.commit()
-        data = dict(code=ResponseCode.UPDATE_POST_SUCCESS, message=ResponseMessage.UPDATE_POST_SUCCESS)
-        return jsonify(data)
-
-    def delete_post(self, post_id):
-        try:
-            post = Post.query.filter_by(id=post_id).first()
-        except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if post is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-
-        db.session.delete(post)
-        db.session.commit()
-        flash('Post deleted.', 'success')
-        data = dict(code=ResponseCode.DELETE_POST_SUCCESS, message=ResponseMessage.DELETE_POST_SUCCESS)
         return jsonify(data)

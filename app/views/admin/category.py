@@ -4,7 +4,7 @@
 # File: category_resource.py
 # Author:Zhang Zhijun
 # Time: 2021-03-13
-
+import json
 
 from flask import Blueprint, render_template, jsonify, url_for, current_app
 from werkzeug.utils import redirect
@@ -15,6 +15,7 @@ from app.forms.category_form import CategoryForm
 from app.models.category import Category
 from app.utils import query_to_dict
 from app.views.admin import bp_admin
+from app.views.include.category_resource import CategoryResource
 
 
 @bp_admin.route('/category', methods=['GET', 'POST'])
@@ -36,61 +37,58 @@ def create_category():
 
 @bp_admin.route('/categories', methods=['GET'])
 def get_categories():
-    try:
-        categories = Category.query.filter().all()
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if categories is None:
-        return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-    current_app.logger.debug("categories: %s", categories)
+    data = CategoryResource.query_categories()
 
-    return categories
+    return render_template('admin/category/category.html', data=data)
 
 
 @bp_admin.route('/category/<int:category_id>', methods=['GET'])
 def get_category_by_id(category_id):
+    data = CategoryResource.query_category_by_id(category_id)
+    return data
+
+
+@bp_admin.route('/category/<int:category_id>', methods=['PUT'])
+def update_category(category_id):
+    category_form = CategoryForm()
+    try:
+        category = Category.query.get_or_404(category_id)
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if category is None:
+        return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
+
+    if category_form.validate_on_submit():
+        category = get_category_info(category_form)
+        db.session.add(category)
+        db.session.commit(category)
+        return redirect(url_for('bp_admin.get_categories'))
+
+    category_form.title.data = category.title
+    category_form.slug.data = category.slug
+    category_form.excerpt.data = category.excerpt
+    category_form.content.data = category.content
+    category_form.categoryid.data = category.categoryid
+    category_form.status.data = category.status
+    return render_template('admin/category/category-edit.html', category_form=category_form)
+
+
+@bp_admin.route('/category/<int:category_id>', methods=['Delete'])
+def delete_category(category_id):
     try:
         category = Category.query.filter_by(id=category_id).first()
     except:
         return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
     if category is None:
         return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(category))
-    current_app.logger.debug("data: %s", data)
-    return jsonify(data)
 
-
-@bp_admin.route('/category/<int:category_id>', methods=['GET', 'PUT'])
-def update_category(category_id):
-    category_form = CategoryForm()
-    if category_form.validate_on_submit():
-        category = get_category_info(category_form)
-        try:
-            c = Category.query.filter_by(id=category.id).first()
-        except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if c is None:
-            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-
-    db.session.commit()
-    date = dict(code=ResponseCode.UPDATE_CATEGORY_SUCCESS, message=ResponseMessage.UPDATE_CATEGORY_SUCCESS)
-    return jsonify(date)
-
-
-@bp_admin.route('/category/<int:category_id>', methods=['Delete'])
-def delete_category(category_id):
-    try:
-        c = Category.query.filter_by(id=category_id).first()
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if c is None:
-        return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-
-    db.session.delete(c)
-    db.session.commit()
-
-    # 未分类文章处理方法
-    # TODO
+    count = Category.query.filter_by(id=category_id).count()
+    if (count == 0):
+        db.session.delete(category)
+        db.session.commit()
+    else:
+        return jsonify(code=ResponseCode.CATEGORY_ASSOCIATE_WITH_POST,
+                       message=ResponseMessage.CATEGORY_ASSOCIATE_WITH_POST)
 
     date = dict(code=ResponseCode.DELETE_CATEGORY_SUCCESS, message=ResponseMessage.DELETE_CATEGORY_SUCCESS)
     return jsonify(date)

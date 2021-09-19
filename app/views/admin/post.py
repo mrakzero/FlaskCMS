@@ -12,6 +12,7 @@ from app.models.post import Category, Post
 from app.models.user import User
 from app.utils import query_to_dict
 from app.views.admin import bp_admin
+from app.views.include.post_resource import PostResource
 
 
 @bp_admin.route('/post', methods=['GET', 'POST'])
@@ -28,93 +29,46 @@ def create_post():
 
 @bp_admin.route('/posts', methods=['GET'])
 def get_posts():
-    try:
-        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
-                                 Post.updatetime, User.username) \
-            .filter(Post.categoryid == Category.id) \
-            .filter(Post.authorid == User.id) \
-            .all()
-        # .order_by('Post.publishtime')  # 降序 ‘-Post.publishtime’
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if posts is None:
-        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-    current_app.logger.debug("posts: %s", posts)
-    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
-    current_app.logger.debug("data: %s", data)
+    data = PostResource.query_posts()
 
-    return render_template('admin/post/post.html', posts=data)
+    return render_template('admin/post/post.html', data=data)
 
 
 @bp_admin.route('/post/<int:post_id>', methods=['GET'])
 def get_post_by_id(post_id):
-    try:
-        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
-                                 Post.updatetime, User.username, Post.content) \
-            .filter(Post.title == post_id) \
-            .filter(Post.categoryid == Category.id) \
-            .filter(Post.authorid == User.id) \
-            .all()
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if posts is None:
-        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
-    current_app.logger.debug("data: %s", data)
+    data = PostResource.query_post_by_id(post_id)
     return jsonify(data)
 
 
 @bp_admin.route('/post/<string:post_title>', methods=['GET'])
 def get_post_by_title(post_title):
-    try:
-        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
-                                 Post.updatetime, User.username, Post.content) \
-            .filter(Post.title == post_title) \
-            .filter(Post.categoryid == Category.id) \
-            .filter(Post.authorid == User.id) \
-            .all()
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if posts is None:
-        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
-    current_app.logger.debug("data: %s", data)
+    data = PostResource.query_post_by_title(post_title)
     return jsonify(data)
 
 
 @bp_admin.route('/post/<string:post_author>', methods=['GET'])
 def get_post_by_author(post_author):
-    try:
-        user = User.query.filter(User.username == post_author).first()
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if user is None:
-        return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
-    try:
-        posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
-                                 Post.updatetime, User.username, Post.content) \
-            .filter(Post.authorid == user.id) \
-            .filter(Post.categoryid == Category.id) \
-            .all()
-    except:
-        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-    if posts is None:
-        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-    data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(posts))
-    current_app.logger.debug("data: %s", data)
+    data = PostResource.query_post_by_author(post_author)
     return jsonify(data)
 
 
 @bp_admin.route('/post/<int:post_id>', methods=['PUT'])
 def update_post(post_id):
     post_form = PostForm()
-    post = Post.query.get_or_404(post_id)
+
+    try:
+        post = Post.query.filter_by(id=post_id).first()
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if post is None:
+        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+
     if post_form.validate_on_submit():
         post = get_post_info(post_form)
         db.session.add(post)
         db.session.commit()
         flash('Post updated.', 'success')
-        return redirect(url_for('admin.post'))
+        return redirect(url_for('bp_admin.get_posts'))
     post_form.title.data = post.title
     post_form.slug.data = post.slug
     post_form.excerpt.data = post.excerpt
@@ -126,34 +80,30 @@ def update_post(post_id):
 
 @bp_admin.route('/post/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
+    try:
+        post = Post.query.filter_by(id=post_id).first()
+    except:
+        return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+    if post is None:
+        return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+
     db.session.delete(post)
     db.session.commit()
-    flash('Post deleted.', 'success')
+
     return redirect(url_for('admin.post'))
 
 
 # 从表单中获取post信息
 def get_post_info(form):
-    title = form.title.data
-    slug = form.slug.data
-    authorid = User.query.get(form.authorid.data)
-    excerpt = form.excerpt.data
-    content = form.content.data
-    categoryid = Category.query.get(form.categoryid.data)
-    status = form.title.data
-    tag = form.title.data
-
-    post = Post(
-        title=title,
-        slug=slug,
-        authorid=authorid,
-        excerpt=excerpt,
-        content=content,
-        categoryid=categoryid,
-        status=status,
-        tag=tag,
-    )
+    post = Post()
+    post.title = form.title.data
+    post.slug = form.slug.data
+    post.authorid = User.query.get(form.authorid.data)
+    post.excerpt = form.excerpt.data
+    post.content = form.content.data
+    post.categoryid = Category.query.get(form.categoryid.data)
+    post.status = form.title.data
+    post.tag = form.title.data
 
     return post
 

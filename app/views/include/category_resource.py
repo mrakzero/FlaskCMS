@@ -20,13 +20,14 @@ def abort_if_not_exist(category_id):
     :return:
     """
     desc = 'The category {} not exist.'.format(category_id)
-    category = Category.query.get_or_404(category_id, description=desc)
+    category = Category.query.query_or_404(category_id, description=desc)
     return category
 
 
 class CategoryResource():
 
-    def get_categories(self):
+    @staticmethod
+    def query_categories():
         # page_num = request.args.get('page_num', 1)
         # per_page = request.args.get('per_page', 10)
         #
@@ -46,11 +47,13 @@ class CategoryResource():
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if categories is None:
             return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-        current_app.logger.debug("categories: %s", categories)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(categories))
+        current_app.logger.debug("data: %s", data)
 
-        return categories
+        return data
 
-    def get_category_by_id(self, category_id):
+    @staticmethod
+    def query_category_by_id(category_id):
         try:
             category = Category.query.filter_by(id=category_id).first()
         except:
@@ -61,53 +64,14 @@ class CategoryResource():
         current_app.logger.debug("data: %s", data)
         return jsonify(data)
 
-    def create_category(self, category):
-        # todo
-
-        if (Category.query.filter_by(slug=category.slug).count() > 0) or (
-                Category.query.filter_by(name=category.name).count() > 0):
-            return jsonify(code=ResponseCode.CATEGORY_ALREADY_EXIST, message=ResponseMessage.CATEGORY_ALREADY_EXIST)
-
-        db.session.add(category)
-        db.session.commit()
-
-        flash('Post created.', 'success')
-        data = dict(code=ResponseCode.CREATE_CATEGORY_SUCCESS, message=ResponseMessage.CREATE_CATEGORY_SUCCESS)
+    @staticmethod
+    def query_category_by_title(category_title):
+        try:
+            category = Category.query.filter_by(id=category_title).first()
+        except:
+            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+        if category is None:
+            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(category))
+        current_app.logger.debug("data: %s", data)
         return jsonify(data)
-
-    def update_category(self, category):
-
-        try:
-            c = Category.query.filter_by(id=category.id).first()
-        except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if c is None:
-            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-
-        db.session.commit(category)
-
-        flash('Post created.', 'success')
-        date = dict(code=ResponseCode.UPDATE_CATEGORY_SUCCESS, message=ResponseMessage.UPDATE_CATEGORY_SUCCESS)
-        return jsonify(date)
-
-    def delete_category(self, category_id):
-        """
-        delete specificated post.
-        paras: post_id
-        """
-        try:
-            c = Category.query.filter_by(id=category_id).first()
-        except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
-        if c is None:
-            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-
-        db.session.delete(c)
-        db.session.commit()
-        flash('Category deleted.', 'success')
-
-        # 未分类文章处理方法
-        # TODO
-
-        date = dict(code=ResponseCode.DELETE_CATEGORY_SUCCESS, message=ResponseMessage.DELETE_CATEGORY_SUCCESS)
-        return jsonify(date)
