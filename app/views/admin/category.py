@@ -15,7 +15,7 @@ from app.forms.category_form import CategoryForm
 from app.models.category import Category
 from app.utils import query_to_dict
 from app.views.admin import bp_admin
-from app.views.include.category_resource import CategoryResource
+from app.views.common.category_resource import CategoryResource
 
 
 @bp_admin.route('/category', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def create_category():
 def get_categories():
     data = CategoryResource.query_categories()
 
-    return render_template('admin/category/category.html', data=data)
+    return data
 
 
 @bp_admin.route('/category/<int:category_id>', methods=['GET'])

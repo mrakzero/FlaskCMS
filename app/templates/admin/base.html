@@ -33,9 +33,10 @@
 {% block main %}{% endblock %}
 
 {% block script %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!--<script src="{{ url_for('static',filename='/lib/layui/layui.all.js')}}"></script>-->
+<script src="{{ url_for('static',filename='/lib/jquery-3.6.0.min.js')}}"></script>
+<!--<script src="{{ url_for('static',filename='/lib/layui/layui.all.js')}}" charset="utf-8"></script>-->
 <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+<script src="{{url_for('static',filename='/js/admin.js')}}" charset="utf-8"></script>
 
 {% endblock %}
 

@@ -26,7 +26,6 @@ def register():
         else:
             db.session.add(user)
             db.session.commit()
-            flash('注册成功！', 'success')
             return redirect(url_for('index'))
     return render_template('admin/register.html', register_form=register_form)
 

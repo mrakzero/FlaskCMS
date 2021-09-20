@@ -11,7 +11,7 @@ from app.models.category import Category
 from app.models.page import Page
 from app.models.user import User
 from app.views.admin import bp_admin
-from app.views.include.page_resource import PageResource
+from app.views.common.page_resource import PageResource
 
 
 @bp_admin.route('/page', methods=['GET', 'Post'])
@@ -29,24 +29,24 @@ def create_page():
 @bp_admin.route('/pages', methods=['GET'])
 def get_pages():
     data = PageResource.query_pages()
-    return render_template('admin/page/page.html', data=data)
+    return data
 
 
 @bp_admin.route('/page/<int:page_id>', methods=['GET'])
 def get_page_by_id(page_id):
-    data = PageResource.query_page_by_id()
+    data = PageResource.query_page_by_id(page_id)
     return data
 
 
 @bp_admin.route('/page/<string:page_title>', methods=['GET'])
 def get_page_by_title(page_title):
-    data = PageResource.query_page_by_title()
+    data = PageResource.query_page_by_title(page_title)
     return data
 
 
 @bp_admin.route('/page/<string:page_author>', methods=['GET'])
 def get_page_by_author(page_author):
-    data = PageResource.query_page_by_title()
+    data = PageResource.query_page_by_title(page_author)
     return data
 
 

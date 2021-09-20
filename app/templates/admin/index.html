@@ -1,5 +1,4 @@
 {% extends 'admin/base.html' %}
-{% include 'admin/header.html' %}
 
 {% block main %}
 {{ super() }}
@@ -82,36 +81,13 @@ This is dashboard
   </div>
 
   <div class="layui-body">
-    <iframe id="iframeMain" src="/admin/dashboard" frameborder="0"
-            width=“100%” scrolling="no"></iframe>
+    <iframe id="admin-frame" src="/admin/dashboard" frameborder="0"
+            width=“100%” height="300px" scrolling="no"></iframe>
   </div>
-  <!--    <iframe id="iframeMain" src="" frameborder="0" style="width: 100%; height: 300px; border-radius: 2px;"></iframe>-->
 
   <div class="layui-footer">
     © ilearnging
   </div>
 </div>
 
-{% endblock %}
-{% block script %}
-{{super()}}
-<script>
-        $(document).ready(function () {
-            $("dd>a").click(function (e) {
-                e.preventDefault();
-                $("#iframeMain").attr("src", $(this).attr("href"));
-            });
-        });
-
-</script>
-
-<script>
-        $(document).ready(function () {
-            $("li>a").click(function (e) {
-                e.preventDefault();
-                $("#iframeMain").attr("src", $(this).attr("href"));
-            });
-        });
-
-</script>
 {% endblock %}

@@ -17,7 +17,8 @@ class PageResource():
         try:
             pages = db.session.query(Page.id, Page.title, Page.slug, User.username, Page.publishtime) \
                 .filter(Page.authorid == User.id) \
-                .all()
+                .all() \
+                .order_by(Page.publishtime.desc())
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if pages is None:
