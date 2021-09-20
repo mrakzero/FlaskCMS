@@ -19,29 +19,37 @@
           {{ post_form.title(class="layui-input",placeholder="请输入文章标题") }}
         </div>
       </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">文章别名</label>
+        <div class="layui-input-block">
+          {{ post_form.slug(class="layui-input",placeholder="请输入文章标题别名") }}
+        </div>
+      </div>
       <div class="layui-form-item layui-form-text">
-         <label class="layui-form-label">文章摘要 </label>
-                        <div class="layui-input-block">
-                            {{ post_form.excerpt(class="layui-textarea",placeholder="请输入摘要") }}
-                        </div>
-                    </div>
-                    <div class="layui-form-item layui-form-text">
-                      <label class="layui-form-label">文章正文</label>
-                        <div class="layui-input-block">
-                          {{ post_form.content(class="layui-textarea",placeholder="请输入内容") }}
+        <label class="layui-form-label">文章摘要 </label>
+        <div class="layui-input-block">
+          {{ post_form.excerpt(class="layui-textarea",placeholder="请输入摘要") }}
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文章正文</label>
+        <div class="layui-input-block">
+          {{ post_form.content(class="layui-textarea",placeholder="请输入内容") }}
                         </div>
                     </div>
                 </div>
                 <div class="layui-col-lg4">
                     <div class="layui-form-item">
                         <label class="layui-form-label">文章分类</label>
-                        <div class="layui-input-block">
-                          <select name="interest" lay-filter="aihao">
-                            {% for cat in categories %}
-                            <option value="{{ cat['id'] }}">{{ cat['name'] }}</option>
-                            {% endfor %}
-                          </select>
-                        </div>
+                      <div class="layui-input-block">
+                        <select name="category" lay-filter="">
+                          {{ post_form.categoryid}}
+                          <!-- <option value="{{ post_form.categoryid }}">{{ post_form.categoryid }}</option> -->
+                          {% for cat in categories %}
+                          <!-- <option value="{{ cat['id] }}">{{ cat['name'] }}</option> -->
+                          {% endfor %}
+                        </select>
+                      </div>
                     </div>
                   <div class="layui-form-item" pane="">
                     <label class="layui-form-label">文章标签</label>

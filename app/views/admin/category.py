@@ -26,20 +26,31 @@ def create_category():
 
         if (Category.query.filter_by(slug=category.slug).count() > 0) or (
                 Category.query.filter_by(name=category.name).count() > 0):
-            return jsonify(code=ResponseCode.CATEGORY_ALREADY_EXIST, message=ResponseMessage.CATEGORY_ALREADY_EXIST)
+            return dict(code=ResponseCode.CATEGORY_ALREADY_EXIST, message=ResponseMessage.CATEGORY_ALREADY_EXIST)
 
         db.session.add(category)
         db.session.commit()
         return redirect(url_for('bp_admin.get_categories'))
 
-    return render_template('admin/category/category-new.html', category_form=category_form)
+    # return render_template('admin/category/category-new.html', category_form=category_form)
+    return dict(code=ResponseCode.CREATE_CATEGORY_SUCCESS, message=ResponseMessage.CREATE_CATEGORY_SUCCESS)
 
 
-@bp_admin.route('/categories', methods=['GET'])
+@bp_admin.route('/categories', methods=['GET', 'POST'])
 def get_categories():
-    # data = CategoryResource.query_categories()
+    category_form = CategoryForm()
+    if category_form.validate_on_submit():
+        category = get_category_info(category_form)
 
-    return render_template('admin/category/category.html')
+        if (Category.query.filter_by(slug=category.slug).count() > 0) or (
+                Category.query.filter_by(name=category.name).count() > 0):
+            return dict(code=ResponseCode.CATEGORY_ALREADY_EXIST, message=ResponseMessage.CATEGORY_ALREADY_EXIST)
+
+        db.session.add(category)
+        db.session.commit()
+        return redirect(url_for('bp_admin.get_categories'))
+
+    return render_template('admin/category/category.html', category_form=category_form)
 
 
 @bp_admin.route('/category/<int:category_id>', methods=['GET'])
@@ -99,7 +110,6 @@ def get_category_info(form):
     category.name = form.name.data
     category.slug = form.slug.data
     category.parentid = form.parentid.data
-    category.post = form.post.data
     category.description = form.description.data
 
     return category

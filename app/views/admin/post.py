@@ -37,7 +37,6 @@ def create_post():
 @bp_admin.route('/posts', methods=['GET'])
 def get_posts():
     data = PostResource.query_posts()
-    # return data
     return render_template('admin/post/post.html')
 
 
