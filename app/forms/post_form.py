@@ -4,7 +4,7 @@
 # Date: 2021/2/12 22:06
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, TextAreaField, IntegerField
+from wtforms import StringField, SubmitField, SelectField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Length
 
 from app.models.post import Category
@@ -17,7 +17,7 @@ class PostForm(FlaskForm):
     excerpt = TextAreaField('摘要', validators=[DataRequired()])
     content = CKEditorField('内容', validators=[DataRequired(message='内容不能为空')])
     categoryid = SelectField('分类', validators=[DataRequired()])
-    status = IntegerField('状态', validators=[DataRequired()])
+    status = BooleanField('状态', validators=[DataRequired()])
     tag = StringField('标签', validators=[DataRequired()])
     submit = SubmitField()
 

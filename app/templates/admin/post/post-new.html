@@ -20,8 +20,7 @@
         </div>
       </div>
       <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">文章摘要
-                        </label>
+         <label class="layui-form-label">文章摘要 </label>
                         <div class="layui-input-block">
                             {{ post_form.excerpt(class="layui-textarea",placeholder="请输入摘要") }}
                         </div>
@@ -30,7 +29,6 @@
                       <label class="layui-form-label">文章正文</label>
                         <div class="layui-input-block">
                           {{ post_form.content(class="layui-textarea",placeholder="请输入内容") }}
-
                         </div>
                     </div>
                 </div>
@@ -54,8 +52,8 @@
                   <div class="layui-form-item" pane="">
                     <label class="layui-form-label">发布状态</label>
                     <div class="layui-input-block">
-                      <input type="radio" name="sex" value="男" title="立即发布" checked="">
-                      <input type="radio" name="sex" value="女" title="保存草稿">
+                      <input type="radio" name="sex" value="True" title="立即发布" checked="">
+                      <input type="radio" name="sex" value="Flase" title="保存草稿">
                     </div>
                   </div>
 
