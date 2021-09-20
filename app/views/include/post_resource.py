@@ -26,8 +26,8 @@ class PostResource():
                                      Post.updatetime, User.username) \
                 .filter(Post.categoryid == Category.id) \
                 .filter(Post.authorid == User.id) \
-                .all()
-            # .order_by('Post.publishtime')  # 降序 ‘-Post.publishtime’
+                .all() \
+                .order_by(Post.publishtime.desc())
 
         except:
             return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
