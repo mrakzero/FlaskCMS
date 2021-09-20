@@ -37,9 +37,9 @@ def create_category():
 
 @bp_admin.route('/categories', methods=['GET'])
 def get_categories():
-    data = CategoryResource.query_categories()
+    # data = CategoryResource.query_categories()
 
-    return data
+    return render_template('admin/category/category.html')
 
 
 @bp_admin.route('/category/<int:category_id>', methods=['GET'])

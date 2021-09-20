@@ -2,8 +2,9 @@
 # File: post_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
+import json
 
-from flask import flash, redirect, url_for, render_template, jsonify
+from flask import flash, redirect, url_for, render_template, jsonify, current_app
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
@@ -11,6 +12,7 @@ from app.forms.post_form import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
 from app.views.admin import bp_admin
+from app.views.common.category_resource import CategoryResource
 from app.views.common.post_resource import PostResource
 
 
@@ -23,13 +25,20 @@ def create_post():
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('bp_admin.get_posts'))
-    return render_template('admin/post/post-new.html', post_form=post_form)
+    categories = CategoryResource.query_categories()
+    current_app.logger.debug("categories: %s", categories)
+    current_app.logger.debug("categories[categories]: %s", categories['categories'])
+    for item in categories['categories']:
+        current_app.logger.debug("item.id:", item['id'])
+        current_app.logger.debug("item.name:", item['name'])
+    return render_template('admin/post/post-new.html', post_form=post_form, categories=categories['categories'])
 
 
 @bp_admin.route('/posts', methods=['GET'])
 def get_posts():
     data = PostResource.query_posts()
-    return data
+    # return data
+    return render_template('admin/post/post.html')
 
 
 @bp_admin.route('/post/<int:post_id>', methods=['GET'])
@@ -88,7 +97,7 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
 
-    return redirect(url_for('admin.post'))
+    return redirect(url_for('bp_admin.get_posts'))
 
 
 # 从表单中获取post信息

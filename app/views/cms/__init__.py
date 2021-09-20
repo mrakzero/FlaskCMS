@@ -4,7 +4,7 @@
 # Date: 2021/2/12 18:32
 from flask import Blueprint
 
-bp_cms = Blueprint('cms_index', __name__, template_folder='../templates/cms', static_folder='../static')
+bp_cms = Blueprint('bp_cms', __name__, template_folder='../templates/cms', static_folder='../static')
 
 from .category import *
 from .index import *

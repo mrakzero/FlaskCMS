@@ -3,7 +3,7 @@
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
 
-from flask import jsonify, current_app
+from flask import current_app
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
@@ -35,13 +35,13 @@ class PostResource():
             #     .order_by(Post.publishtime.desc())
 
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+            return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         current_app.logger.debug("posts: %s", posts)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, posts=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data
 
     @staticmethod
     def query_post_by_id(post_id):
@@ -54,30 +54,30 @@ class PostResource():
                 .first()
 
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if post is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+            return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, post=query_to_dict(post))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data
 
     # get post by post name
     @staticmethod
-    def query_post_by_title(title):
+    def query_post_by_title(post_title):
         try:
             post = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
                                     Post.updatetime, User.username, Post.content) \
-                .filter(Post.title == title) \
+                .filter(Post.title == post_title) \
                 .filter(Post.categoryid == Category.id) \
                 .filter(Post.authorid == User.id) \
                 .all()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if post is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+            return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, post=query_to_dict(post))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data
 
     # get posts by author
     @staticmethod
@@ -85,9 +85,9 @@ class PostResource():
         try:
             user = User.query.filter(User.username == author).first()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if user is None:
-            return jsonify(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
+            return dict(code=ResponseCode.USER_NOT_EXIST, message=ResponseMessage.USER_NOT_EXIST)
         try:
             posts = db.session.query(Post.id, Post.title, Post.slug, Category.name, Post.excerpt,
                                      Post.updatetime, User.username, Post.content) \
@@ -95,12 +95,12 @@ class PostResource():
                 .filter(Post.categoryid == Category.id) \
                 .all()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+            return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, posts=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data
 
     # get posts by category
     @staticmethod
@@ -113,12 +113,12 @@ class PostResource():
                 .filter(Post.authorid == User.id) \
                 .all()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+            return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, posts=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data
 
     # get posts by tag
     @staticmethod
@@ -137,9 +137,9 @@ class PostResource():
             # post = Post.query.filter_by(tag=tag).first()
             posts = Post.tag.all()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
-            return jsonify(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
+            return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, posts=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data

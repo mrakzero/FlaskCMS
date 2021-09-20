@@ -1,27 +1,25 @@
 {% extends 'admin/base.html' %}
 
 {% block main %}
-    <body class="layui-layout-body">
-    <div class="layui-fluid">
-        <div class="layui-row layui-col-space10">
-            <div class="layui-col-lg12">
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend>新建文章</legend>
-                </fieldset>
-            </div>
-        </div>
-        <div class="layui-row layui-col-space10">
-            <form class="layui-form layui-form-pane" action="" method="post">
-                {{ post_form.csrf_token }}
-                <div class="layui-col-lg8">
+<form class="layui-fluid layui-form layui-form-pane" action="" method="post">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-lg12">
+      <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>新建文章</legend>
+      </fieldset>
+    </div>
+  </div>
+  <div class="layui-row layui-col-space20">
+    {{ post_form.csrf_token }}
+    <div class="layui-col-lg8">
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">文章标题</label>
-                        <div class="layui-input-block">
-                            {{ post_form.title(class="layui-input",placeholder="请输入文章标题") }}
-                        </div>
-                    </div>
-                    <div class="layui-form-item layui-form-text">
+      <div class="layui-form-item">
+        <label class="layui-form-label">文章标题</label>
+        <div class="layui-input-block">
+          {{ post_form.title(class="layui-input",placeholder="请输入文章标题") }}
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
                         <label class="layui-form-label">文章摘要
                         </label>
                         <div class="layui-input-block">
@@ -29,48 +27,51 @@
                         </div>
                     </div>
                     <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">文章内容</label>
+                      <label class="layui-form-label">文章正文</label>
                         <div class="layui-input-block">
                           {{ post_form.content(class="layui-textarea",placeholder="请输入内容") }}
 
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block">
-                            <button type="submit" class="layui-btn" lay-submit="">立即提交</button>
-                            <button type="reset" class="layui-btn layui-btn-primary">保存草稿</button>
-                        </div>
-                    </div>
-
                 </div>
                 <div class="layui-col-lg4">
                     <div class="layui-form-item">
                         <label class="layui-form-label">文章分类</label>
                         <div class="layui-input-block">
-                            <select name="interest" lay-filter="aihao">
-                                <option value=""></option>
-                                <option value="0">写作</option>
-                                <option value="1" selected="">阅读</option>
-                                <option value="2">游戏</option>
-                                <option value="3">音乐</option>
-                                <option value="4">旅行</option>
-                            </select>
+                          <select name="interest" lay-filter="aihao">
+                            {% for cat in categories %}
+                            <option value="{{ cat['id'] }}">{{ cat['name'] }}</option>
+                            {% endfor %}
+                          </select>
                         </div>
                     </div>
-                    <div class="layui-form-item" pane="">
-                        <label class="layui-form-label">发布</label>
-                        <div class="layui-input-block">
-                            <input type="radio" name="sex" value="男" title="男" checked="">
-                            <input type="radio" name="sex" value="女" title="女">
-                        </div>
-                    </div>
+                  <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">文章标签</label>
+                    <div class="layui-input-block">
 
+                    </div>
+                  </div>
+                  <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">发布状态</label>
+                    <div class="layui-input-block">
+                      <input type="radio" name="sex" value="男" title="立即发布" checked="">
+                      <input type="radio" name="sex" value="女" title="保存草稿">
+                    </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button type="submit" class="layui-btn" lay-submit="">立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">保存草稿</button>
+                    </div>
+                  </div>
                 </div>
-            </form>
-        </div>
-    </div>
+  </div>
+</form>
+
+
 {% endblock %}
 {% block script %}
-    {{ super() }}
-        <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{{ super() }}
+<script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}

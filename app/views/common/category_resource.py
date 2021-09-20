@@ -5,7 +5,7 @@
 # Author:Zhang Zhijun
 # Time: 2021-03-13
 
-from flask import jsonify, request, flash, current_app
+from flask import current_app
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
@@ -44,10 +44,10 @@ class CategoryResource():
         try:
             categories = Category.query.filter().all()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if categories is None:
-            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
-        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(categories))
+            return dict(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
+        data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, categories=query_to_dict(categories))
         current_app.logger.debug("data: %s", data)
 
         return data
@@ -57,21 +57,21 @@ class CategoryResource():
         try:
             category = Category.query.filter_by(id=category_id).first()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if category is None:
-            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
+            return dict(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(category))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data
 
     @staticmethod
     def query_category_by_title(category_title):
         try:
             category = Category.query.filter_by(id=category_title).first()
         except:
-            return jsonify(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
+            return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if category is None:
-            return jsonify(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
+            return dict(code=ResponseCode.CATEGORY_NOT_EXIST, message=ResponseMessage.CATEGORY_NOT_EXIST)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, data=query_to_dict(category))
         current_app.logger.debug("data: %s", data)
-        return jsonify(data)
+        return data

@@ -5,7 +5,7 @@
 
 from flask import Blueprint
 
-bp_admin = Blueprint('admin_index', __name__, url_prefix='/admin', template_folder='../templates/admin/',
+bp_admin = Blueprint('bp_admin', __name__, url_prefix='/admin', template_folder='../templates/admin/',
                      static_folder='../static')
 
 from .category import *
