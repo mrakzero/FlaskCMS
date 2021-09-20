@@ -5,13 +5,13 @@ layui.use('table', function () {
     table.render({
         elem: '#categories-table'
         , url: '/admin/categories'
-        , title: '文章分类列表'
+        , title: '分类列表'
         , cols: [[
 
             {field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true}
-            , {field: 'name', title: '分类名', width: 120, edit: 'text'}
-            , {field: 'slug', title: '分类别名', width: 80, edit: 'text', sort: true}
-            , {field: 'description', title: '分类描述', width: 100}
+            , {field: 'name', title: '分类名称', width: 120, edit: 'text'}
+            , {field: 'slug', title: '分类别名', width: 120, edit: 'text'}
+            , {field: 'description', title: '分类描述', width: 120,edit: 'text'}
             , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
         ]]
         , page: true

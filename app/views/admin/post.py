@@ -25,13 +25,8 @@ def create_post():
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('bp_admin.get_posts'))
-    categories = CategoryResource.query_categories()
-    current_app.logger.debug("categories: %s", categories)
-    current_app.logger.debug("categories[categories]: %s", categories['categories'])
-    for item in categories['categories']:
-        current_app.logger.debug("item.id:", item['id'])
-        current_app.logger.debug("item.name:", item['name'])
-    return render_template('admin/post/post-new.html', post_form=post_form, categories=categories['categories'])
+
+    return render_template('admin/post/post-new.html', post_form=post_form)
 
 
 @bp_admin.route('/posts', methods=['GET'])
