@@ -38,4 +38,4 @@ def registerResources():
     api.add_resource(PageListResource, '/pages', endpoint='ep_pages')
     api.add_resource(PageResource, '/page', '/page/<int:id>', endpoint='ep_page')
     api.add_resource(PageTitleResource, '/page/title/<string:title>', endpoint='ep_get_page_by_title')
-    api.add_resource(PageAuthorResource, '/page/author/<string:authror>', endpoint='get_page_by_author')
+    api.add_resource(PageAuthorResource, '/page/author/<string:author>', endpoint='get_page_by_author')

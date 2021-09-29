@@ -28,11 +28,14 @@ def create_post():
 
     return render_template('admin/post/post-new.html', post_form=post_form)
 
+@bp_admin.route('/postlist', methods=['GET'])
+def admin_posts_view():
+    return render_template('admin/post/post.html')
 
 @bp_admin.route('/posts', methods=['GET'])
 def get_posts():
     data = PostResource.query_posts()
-    return render_template('admin/post/post.html')
+    return data
 
 
 @bp_admin.route('/post/<int:post_id>', methods=['GET'])

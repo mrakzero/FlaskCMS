@@ -46,16 +46,16 @@ def create_app(config_name):
     app.config['POST_PER_PAGE'] = 10
 
     # 配置restful api
-    # from app.api.v1 import api, registerResources
-    # registerResources()
-    # api.init_app(app)
+    from app.api.v1 import api, registerResources
+    registerResources()
+    api.init_app(app)
 
     # 若使用Jija2模板，请打开蓝图的注释
     # 附加路由和自定义错误页面，将蓝本注册到工厂函数
-    from app.views.admin import bp_admin
-    from app.views.cms import bp_cms
-
-    app.register_blueprint(bp_cms)
-    app.register_blueprint(bp_admin)
+    # from app.views.admin import bp_admin
+    # from app.views.cms import bp_cms
+    #
+    # app.register_blueprint(bp_cms)
+    # app.register_blueprint(bp_admin)
 
     return app

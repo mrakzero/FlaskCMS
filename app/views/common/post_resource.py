@@ -2,8 +2,9 @@
 # File: post_resource.py
 # Author: Zhangzhijun
 # Date: 2021/2/12 21:22
+import json
 
-from flask import current_app
+from flask import current_app, jsonify
 
 from app import db
 from app.errors.errorcode import ResponseCode, ResponseMessage
@@ -38,9 +39,9 @@ class PostResource():
             return dict(code=ResponseCode.QUERY_DB_FAILED, message=ResponseMessage.QUERY_DB_FAILED)
         if posts is None:
             return dict(code=ResponseCode.POST_NOT_EXIST, message=ResponseMessage.POST_NOT_EXIST)
-        current_app.logger.debug("posts: %s", posts)
         data = dict(code=ResponseCode.SUCCESS, message=ResponseMessage.SUCCESS, posts=query_to_dict(posts))
         current_app.logger.debug("data: %s", data)
+
         return data
 
     @staticmethod
