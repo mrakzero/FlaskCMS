@@ -12,7 +12,6 @@ from app.forms.post_form import PostForm
 from app.models.post import Category, Post
 from app.models.user import User
 from app.views.admin import bp_admin
-from app.views.common.category_resource import CategoryResource
 from app.views.common.post_resource import PostResource
 
 
@@ -28,9 +27,11 @@ def create_post():
 
     return render_template('admin/post/post-new.html', post_form=post_form)
 
+
 @bp_admin.route('/postlist', methods=['GET'])
 def admin_posts_view():
     return render_template('admin/post/post.html')
+
 
 @bp_admin.route('/posts', methods=['GET'])
 def get_posts():
