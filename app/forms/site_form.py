@@ -9,7 +9,7 @@ from wtforms.validators import DataRequired, Length
 from app.models.user import User
 
 
-class PostForm(FlaskForm):
+class SiteForm(FlaskForm):
     name = StringField('站点标题',
                        validators=[Length(min=1, max=64, message='站点标题长度为1~64位'), DataRequired(message='站点标题不能为空')])
     keywords = StringField('网站关键字',
@@ -20,4 +20,4 @@ class PostForm(FlaskForm):
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
-        super(PostForm, self).__init__(*args, **kwargs)
+        super(SiteForm, self).__init__(*args, **kwargs)

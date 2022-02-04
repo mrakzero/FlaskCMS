@@ -14,5 +14,5 @@ from .index import *
 from .media import *
 from .page import *
 from .post import *
-from .setting import *
+from .site import *
 from .user import *

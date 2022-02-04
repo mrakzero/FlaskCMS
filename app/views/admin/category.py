@@ -32,8 +32,8 @@ def create_category():
         db.session.commit()
         return redirect(url_for('bp_admin.get_categories'))
 
-    # return render_template('admin/category/category-new.html', category_form=category_form)
-    return dict(code=ResponseCode.CREATE_CATEGORY_SUCCESS, message=ResponseMessage.CREATE_CATEGORY_SUCCESS)
+    return render_template('admin/category/category-new.html', category_form=category_form)
+    # return dict(code=ResponseCode.CREATE_CATEGORY_SUCCESS, message=ResponseMessage.CREATE_CATEGORY_SUCCESS)
 
 
 @bp_admin.route('/categories', methods=['GET', 'POST'])
