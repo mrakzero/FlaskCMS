@@ -21,8 +21,8 @@ def generate_user_password_hash(password):
 
 # 序列化查询结果
 def query_to_dict(models):
-    if (isinstance(models, list)):
-        if (isinstance(models[0], Model)):
+    if isinstance(models, list):
+        if isinstance(models[0], Model):
             lst = []
             for model in models:
                 gen = model_to_dict(model)
@@ -33,7 +33,7 @@ def query_to_dict(models):
             res = result_to_dict(models)
             return res
     else:
-        if (isinstance(models, Model)):
+        if isinstance(models, Model):
             gen = model_to_dict(models)
             dit = dict((g[0], g[1]) for g in gen)
             return dit
@@ -52,7 +52,7 @@ def result_to_dict(results):
         return res
 
 
-def model_to_dict(model):  # 这段来自于参考资源
+def model_to_dict(model):
     for col in model.__table__.columns:
         if isinstance(col.type, DateTime):
             value = convert_datetime(getattr(model, col.name))
@@ -60,7 +60,7 @@ def model_to_dict(model):  # 这段来自于参考资源
             value = float(getattr(model, col.name))
         else:
             value = getattr(model, col.name)
-        yield (col.name, value)
+        yield col.name, value
 
 
 def find_datetime(value):
@@ -71,11 +71,11 @@ def find_datetime(value):
 
 def convert_datetime(value):
     if value:
-        if (isinstance(value, (cdatetime, DateTime))):
+        if isinstance(value, (cdatetime, DateTime)):
             return value.strftime("%Y-%m-%d %H:%M:%S")
-        elif (isinstance(value, (date, Date))):
+        elif isinstance(value, (date, Date)):
             return value.strftime("%Y-%m-%d")
-        elif (isinstance(value, (Time, time))):
+        elif isinstance(value, (Time, time)):
             return value.strftime("%H:%M:%S")
         else:
             return ""

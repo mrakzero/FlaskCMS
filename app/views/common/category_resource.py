@@ -37,7 +37,7 @@ class CategoryResource():
         # except ValueError:
         #     return {'message': 'Make sure page_num and per_page are integers.'}, 400
         # if per_page > 10:
-        #     per_page = 10
+        #     per_page = 10d
         #
         # paginate = Category.page(page_num, per_page)
 
